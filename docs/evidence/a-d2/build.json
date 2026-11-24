@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-25",
+  "sourceBase": "9b5b5e80e3bd2c307f67de0bbff212fbf74b165d",
+  "qt": "5.15.2",
+  "compiler": "MinGW-w64 GCC 8.1.0",
+  "build": "Clean directory; qmake probe.pro -spec win32-g++ CONFIG+=release; mingw32-make -f Makefile.Release -j2",
+  "moc": "Generated from probe.cpp by Qt 5.15.2 moc",
+  "probeSourceSha256": "46c58e2fd8102584409973fc7a23136b32469a1c2a1ba63192f92d8d8157af90",
+  "pluginSha256": "542cd36ddb0a7d038f26da9363385d17a4959f6faf04cb3ff5d1cae7ca08555b",
+  "canedaExeSha256": "1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43",
+  "testExitCode": 0,
+  "scope": "Windows desktop; HarmonyOS HAP not tested"
+}
