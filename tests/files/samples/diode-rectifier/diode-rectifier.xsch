@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE caneda>
+<caneda version="0.4.0">
+ <components>
+  <component name="Voltage Source Sinusoidal" library="Sources" pos="80,220" transform="1,0,0,1,0,0">
+   <properties pos="-23,36">
+    <property name="label" value="V1" visible="true"/>
+    <property name="Va" value="10" visible="true"/>
+    <property name="Voff" value="0" visible="false"/>
+    <property name="freq" value="50" visible="true"/>
+    <property name="td" value="0" visible="false"/>
+    <property name="theta" value="0" visible="false"/>
+   </properties>
+  </component>
+  <component name="Diode" library="Semiconductor" pos="240,100" transform="1,0,0,1,0,0">
+   <properties pos="-23,14">
+    <property name="label" value="D1" visible="true"/>
+    <property name="model" value="D" visible="false"/>
+    <property name="area" value="1.0" visible="false"/>
+   </properties>
+  </component>
+  <component name="Resistor" library="Passive" pos="380,100" transform="1,0,0,1,0,0">
+   <properties pos="-23,10">
+    <property name="label" value="R1" visible="true"/>
+    <property name="R" value="1k" visible="true"/>
+   </properties>
+  </component>
+  <component name="Capacitor" library="Passive" pos="320,220" transform="1,0,0,1,0,0">
+   <properties pos="-23,14">
+    <property name="label" value="C1" visible="true"/>
+    <property name="C" value="470u" visible="true"/>
+   </properties>
+  </component>
+  <component name="Transient Simulation" library="Simulations" pos="520,120" transform="1,0,0,1,0,0">
+   <properties pos="-23,26">
+    <property name="label" value="Sim1" visible="true"/>
+    <property name="tstep" value="10u" visible="true"/>
+    <property name="tstop" value="60m" visible="true"/>
+    <property name="tstart" value="0" visible="false"/>
+    <property name="tmax" value="10u" visible="false"/>
+    <property name="uic" value="" visible="false"/>
+   </properties>
+  </component>
+ </components>
+ <ports>
+  <port name="in" pos="80,100"/>
+  <port name="out" pos="300,100"/>
+  <port name="ground" pos="200,320"/>
+ </ports>
+ <wires>
+  <wire start="80,190" end="80,100"/>
+  <wire start="80,100" end="220,100"/>
+  <wire start="260,100" end="300,100"/>
+  <wire start="300,100" end="360,100"/>
+  <wire start="300,100" end="300,220"/>
+  <wire start="400,100" end="400,320"/>
+  <wire start="340,220" end="340,320"/>
+  <wire start="80,250" end="80,320"/>
+  <wire start="80,320" end="200,320"/>
+  <wire start="200,320" end="340,320"/>
+  <wire start="340,320" end="400,320"/>
+ </wires>
+</caneda>

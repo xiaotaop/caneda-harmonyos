@@ -1,0 +1,61 @@
+{
+  "_comment": "Numerical checkpoints for the two shipped Caneda sample projects. RC values are the closed-form response to a finite 1 us ramp (tau = R*C = 1 kohm * 1 uF = 1 ms), not simulator snapshots, so the check is independent of ngspice. Rectifier values are ngspice-47 results; its closed form needs the diode's exponential model.",
+  "rc-lowpass": {
+    "description": "RC low-pass step response. V1 steps 0 -> 5 V at 1 ms with a 1 us rise, R1 = 1 kohm, C1 = 1 uF, so tau = 1 ms. The settling sleeve is fully captured inside the 7 ms run.",
+    "checkpoints": [
+      {
+        "time": 0.0005,
+        "channel": "v(out)",
+        "value": 0,
+        "tolerance": 0.003
+      },
+      {
+        "time": 0.002003,
+        "channel": "v(out)",
+        "value": 3.165195,
+        "tolerance": 0.01
+      },
+      {
+        "time": 0.004003,
+        "channel": "v(out)",
+        "value": 4.751686,
+        "tolerance": 0.01
+      },
+      {
+        "time": 0.006003,
+        "channel": "v(out)",
+        "value": 4.966394,
+        "tolerance": 0.01
+      },
+      {
+        "time": 0.007,
+        "channel": "v(out)",
+        "value": 4.9876,
+        "tolerance": 0.01
+      }
+    ]
+  },
+  "diode-rectifier": {
+    "description": "Half-wave rectifier with smoothing. V1 is a 50 Hz, 10 V peak sine, D1 is the default Caneda diode, and the load is R1 = 1 kohm in parallel with C1 = 470 uF. The output settles to roughly 8.9-9.25 V with about 0.36 V peak-to-peak ripple, i.e. one diode drop below the 10 V peak.",
+    "checkpoints": [
+      {
+        "time": 0.03,
+        "channel": "v(out)",
+        "value": 9.0645,
+        "tolerance": 0.3
+      },
+      {
+        "time": 0.04,
+        "channel": "v(out)",
+        "value": 8.8884,
+        "tolerance": 0.3
+      },
+      {
+        "time": 0.05,
+        "channel": "v(out)",
+        "value": 9.0645,
+        "tolerance": 0.3
+      }
+    ]
+  }
+}
