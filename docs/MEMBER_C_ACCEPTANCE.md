@@ -8,8 +8,9 @@
 
 | 项目 | 值 | 记录人 | 日期 |
 |---|---|---|---|
-| HAP 构建号 | 待组长提供 | 组长 | D3 |
-| 模拟器镜像 / API / ABI | 待组长提供 | 组长 | D1 |
+| HAP 构建号 | 待组长提供（本机无 Qt for HarmonyOS SDK，尚无 HAP） | 组长 | D3 |
+| 模拟器镜像 / API / ABI | HarmonyOS 7.0.0.107，API 26，x86_64，2in1（MateBook Pro） | 成员 C | 2026-11-24 |
+| 模拟器版本 / hdc | Emulator 26.0.0.400 / hdc 3.2.0f | 成员 C | 2026-11-24 |
 | 桌面 ngspice 版本 | ngspice-47 | 成员 C | 2026-11-24 |
 | 样例校验脚本 | `tests/files/verify_samples.py` | 成员 C | 2026-11-24 |
 
@@ -57,7 +58,7 @@
 | D2 | 安装后首次启动 | 首次启动应用 | 窗口正常，无崩溃 | 待验 | |
 | D3 | 文件选择回调 | 通过平台桥接选择样例文件 | 能拿到路径并打开 | 待验 | |
 | D4 | 文件选择取消 | 在系统文件对话框中取消 | 应用收到取消状态，不崩溃 | 待验 | |
-| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | |
+| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | 仅完成设备级预检：模拟器 `/data/local/tmp` 可建目录、写入并读回，写 `/system` 返回 Read-only file system。应用沙箱内的可写目录（如 `/data/storage/el2/base/files`）需在 HAP 内验证 |
 
 ## 桌面基线（D1 已完成）
 
@@ -79,6 +80,29 @@
 - Caneda 自己从原理图导出网表（C3、C5），而不是由 `verify_samples.py` 生成。
 - Caneda 自己调用 ngspice 运行仿真并显示波形（C3、C5）。
 - 界面操作、保存后重开与退出重启（A 组、C2）。
+
+## 模拟器环境预检（2026-11-24）
+
+本机 DevEco Studio 已可启动 MateBook Pro 模拟器，用于确认后续验收的环境前提。以下结果只覆盖设备与文件系统层，**不含 Caneda 应用本身**。
+
+| 项目 | 结果 | 证据 |
+|---|---|---|
+| 模拟器启动 | 通过 | Emulator 26.0.0.400，`hdc list targets` 返回 `127.0.0.1:5555` |
+| 设备类型 / ABI | 2in1，x86_64 | `const.product.devicetype`、`const.product.cpu.abilist` |
+| 系统版本 / API | HarmonyOS 7.0.0.107，API 26 | `const.product.software.version` |
+| 沙箱写读 | 通过 | `/data/local/tmp` 建目录、写 13 字节、读回一致 |
+| 只读路径保护 | 通过 | 写 `/system` 返回 Read-only file system |
+| 样例文件下发 | 通过 | 两套样例经 `hdc file send` 传至模拟器，MD5 与本地一致 |
+| 样例回传解析 | 通过 | 回传的 `rc-lowpass.xsch` 仍解析为 4 元件、8 连线、3 端口 |
+
+### 尚未覆盖
+
+本机没有 Qt for HarmonyOS SDK，也没有 Caneda 的 HAP 构建产物，因此以下用例**无法在本机执行**，仍为待验：
+
+- A 组全部（新建、保存、重开、退出重启、另存、只读路径、取消、失败提示）。
+- B 组全部（空文件、截断、非法根元素、版本过高、未知元件、缺库、悬空连线）。负例文件已备好并置于模拟器 `/data/local/tmp/caneda-cases`，待 HAP 就绪后直接使用。
+- C 组全部（两套样例的打开、编辑、仿真、失败恢复）。
+- D1–D4（安装、首次启动、文件选择回调与取消），D5 的应用沙箱部分。
 
 ## 缺陷清单
 
