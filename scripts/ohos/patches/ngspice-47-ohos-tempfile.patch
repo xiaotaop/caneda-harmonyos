@@ -1,0 +1,23 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -13,0 +14 @@
++#include <errno.h>
+@@ -1396,0 +1398,16 @@
++#if defined(__OHOS__)
++            /* The process cannot rely on a writable system temporary directory.
++               The caller supplies a private, writable working directory. */
++            char tempname[] = "./.ngspice-XXXXXX";
++            int tempfd = mkstemp(tempname);
++            FILE *tempfile = NULL;
++            if (tempfd >= 0) {
++                if (unlink(tempname) == 0)
++                    tempfile = fdopen(tempfd, "w+b");
++                if (!tempfile) {
++                    int saved_errno = errno;
++                    close(tempfd);
++                    errno = saved_errno;
++                }
++            }
++#else
+@@ -1397,0 +1415 @@
++#endif
