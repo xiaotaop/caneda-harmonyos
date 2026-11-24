@@ -1,0 +1,7 @@
+RC step reference, tau = 1 ms
+V1 in 0 PULSE(0 5 1m 1u 1u 20m 40m)
+R1 in out 1k
+C1 out 0 1u
+.save v(out)
+.tran 10u 7m 0 10u
+.end
