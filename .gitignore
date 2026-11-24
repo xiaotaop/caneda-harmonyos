@@ -5,3 +5,5 @@ CMakeLists.txt.user*
 .my-setup
 tags
 doxygen.log
+__pycache__/
+*.pyc
