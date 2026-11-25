@@ -24,12 +24,16 @@ Host baseline: DevEco Studio 26.0.0.865 and Native SDK 26.0.0.105.
    ngspice integration are subsequent work.
 
 [Qt Stage and CMake guide](https://wiki.qt.io/Qt_for_HarmonyOS/user_development/deveco_cmake_guide_cross_compile)
+## Simulator verification
 
-## D2 verification
+SDK 26.0.0.105 configured Qt for x86_64 with EGL and OpenGL ES. The full
+qtbase build stopped in the unused EGLFS plugin; Qt Core, Gui and Widgets
+were already available. Building the HarmonyOS platform plugin directly
+with the generated qmake and mingw32-make produced platforms/libqohos.so.
+The qtbase build directory can be used as the Qt prefix for the probe.
 
-The project generator was exercised against a minimal Stage template fixture.
-The HarmonyOS SDK Clang 15.0.4 passed compiler and ABI detection for x86_64.
-Native configuration then stopped at Qt5 package discovery. A HarmonyOS
-x86_64 Qt 5.15.16 prefix and its runtime libraries are needed for the full
-DevEco build. The official Stage template, HAP packaging, and emulator
-launch have not yet been verified together.
+The official Stage template generated with API 26 built with Hvigor.
+The debug HAP installed with hdc and QAbility displayed the
+Caneda · Qt Widgets window on MateBook Pro (HarmonyOS 7.0, x86_64).
+This confirms the platform probe. Caneda project editing, Qwt and ngspice
+still require application integration.

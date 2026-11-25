@@ -31,23 +31,24 @@ def main():
     if count != 1:
         parser.error("expected one APP_LIBRARY_NAME declaration")
     module_profile = (entry / "build-profile.json5").read_text(encoding="utf-8")
-    if re.search(r'\bexternalNativeOptions\b', module_profile):
-        parser.error("use the original stage template without externalNativeOptions")
-    profile_start = re.search(r'(["\']?buildOption["\']?\s*:\s*\{)', module_profile)
-    if not profile_start:
-        parser.error("template entry/build-profile.json5 has no buildOption object")
     native = {
         "path": "./src/main/caneda-probe/CMakeLists.txt",
         "arguments": f'-DCANEDA_QT_PREFIX="{prefix.as_posix()}"',
         "abiFilters": ["x86_64"],
     }
-    position = profile_start.end()
-    remainder = module_profile[position:].lstrip()
-    separator = "" if remainder.startswith("}") else ","
-    updated_profile = (module_profile[:position] + "\n    externalNativeOptions: "
-                       + json.dumps(native) + separator + module_profile[position:])
+    native_block = r'(["\']?externalNativeOptions["\']?\s*:\s*)\{[^{}]*\}'
+    updated_profile, count = re.subn(
+        native_block, lambda match: match.group(1) + json.dumps(native), module_profile,
+    )
+    if count != 1:
+        parser.error("expected one flat externalNativeOptions object in the Qt Stage template")
 
     shutil.copytree(args.template, output)
+    project_profile = output / "build-profile.json5"
+    profile = project_profile.read_text(encoding="utf-8")
+    profile = re.sub(r'("compatibleSdkVersion"\s*:\s*)"[^"]+"',
+                     r'\g<1>"26.0.0"', profile)
+    project_profile.write_text(profile, encoding="utf-8")
     target_entry = output / "entry"
     (output / constants.relative_to(args.template)).write_text(updated, encoding="utf-8")
     (target_entry / "build-profile.json5").write_text(updated_profile, encoding="utf-8")
