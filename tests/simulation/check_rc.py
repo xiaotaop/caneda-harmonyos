@@ -6,6 +6,7 @@ from bisect import bisect_left
 import math
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -59,18 +60,23 @@ def read_rc_raw(path):
 
 
 def compare(samples):
-    if len(samples) < 2 or abs(samples[0][0]) > 1e-9 or abs(samples[-1][0] - 0.007) > 1e-9:
+    stop = 0.007
+    if len(samples) < 2 or abs(samples[0][0]) > 1e-9 or abs(samples[-1][0] - stop) > 1e-9:
         raise ValueError("expected coverage from 0 to 7 ms")
 
     # Exact response to a linear 1 us input rise starting at 1 ms.
     tau, rise, delay = 0.001, 0.000001, 0.001
     at_end_of_rise = 5 * (1 + tau / rise * math.expm1(-rise / tau))
     times = [time_s for time_s, _ in samples]
-    for time_s in (0.0005, 0.002001, 0.004001, 0.006001):
-        i = bisect_left(times, time_s)
-        t0, v0 = samples[i - 1]
-        t1, v1 = samples[i]
-        measured = v0 + (v1 - v0) * (time_s - t0) / (t1 - t0)
+    # Match the checkpoint times of the rc-lowpass schematic sample.
+    for time_s in (0.0005, 0.002003, 0.004003, 0.006003, stop):
+        if time_s == stop:
+            measured = samples[-1][1]
+        else:
+            i = bisect_left(times, time_s)
+            t0, v0 = samples[i - 1]
+            t1, v1 = samples[i]
+            measured = v0 + (v1 - v0) * (time_s - t0) / (t1 - t0)
         expected = (
             0.0 if time_s < delay else
             5 - (5 - at_end_of_rise) * math.exp(-(time_s - delay - rise) / tau)
@@ -95,11 +101,14 @@ def main():
     try:
         raw_path = args.raw
         if args.ngspice:
+            executable = shutil.which(args.ngspice)
+            if executable is None:
+                raise ValueError(f"ngspice executable not found: {args.ngspice}")
+            executable = str(Path(executable).resolve())
             output = args.output.resolve()
             output.mkdir()
             raw_path = output / "rc-step.raw"
             log_path = output / "rc-step.log"
-            executable = str(Path(args.ngspice).resolve()) if os.path.dirname(args.ngspice) else args.ngspice
             netlist = Path(__file__).with_name("rc-step.cir").resolve()
             env = dict(os.environ, LC_ALL="C", SPICE_ASCIIRAWFILE="1")
             with log_path.open("wb") as log:

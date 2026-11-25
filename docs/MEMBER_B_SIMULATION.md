@@ -20,7 +20,7 @@
 | 网表和调用 | [FormatSpice::save](../src/fileformats.cpp#L1075) 把 `.net` 写在工程同目录；[设置](../src/settings.cpp#L77) 默认是 `ngspice -b -r %filename.raw %filename.net`。QProcess 以工程目录为 cwd 写同名 `.log` 和 `.raw`。 | 用包内绝对路径和独立参数；用应用可写目录隔离每次运行，并为样例保留明确的相对模型解析路径。与 C 确认工程输入由哪里交给仿真。 |
 | 完成和失败 | 原理图路径当前有同步的 `ngspice -v` 查找，忽略了 `FormatSpice::save()` 返回值；完成回调只收退出码，默认使用当前工程名字找 RAW。 | 验证 Qt/系统能否起子进程；将导出失败、启动失败、非零退出或崩溃、超时、缺失或坏 RAW 分开处理。回调使用启动时的运行目录，连续运行和失败重试不读旧结果。 |
 | 结果和波形 | [FormatRawSimulation](../src/fileformats.cpp#L1525) 读取 ASCII 或小端 double 的二进制 RAW，创建 `ChartSeries`；[ChartScene](../src/chartscene.cpp#L37) 和 [ChartView](../src/chartview.cpp) 依赖 Qwt。默认输出二进制。当前 loader 在文件能打开时即报告加载成功，对截断和多 plot 的处理需要验证。 | 包内探针先用 ASCII 检查真实瞬态结果，Caneda 接入后验证实际波形视图。从单 plot、秒与伏特起步，检查解析错误能返回给界面。 |
-| 构建与分发 | [CMake](../CMakeLists.txt) 要求 Qt5 Widgets、Svg、PrintSupport、LinguistTools 和 Qwt ≥ 6.1.2，Caneda 没有链接 ngspice。 | 与组长核对鸿蒙 Qt/Qwt ABI。ngspice 核对 ELF 架构、动态依赖以及运行期脚本或 code model 是否需要入包。向 C 提供实际启用组件的版本、许可证与 notices，参考发布包 `COPYING`，其中含 Modified BSD 和其他组件许可。 |
+| 构建与分发 | [CMake](../CMakeLists.txt) 要求 Qt5 Widgets、Svg、PrintSupport、LinguistTools 和 Qwt ≥ 6.1.2，Caneda 没有链接 ngspice。 | 与组长核对鸿蒙 Qt/Qwt ABI。ngspice 核对 ELF 架构、动态依赖以及运行期脚本或 code model 是否需要入包。向 C 提供实际启用组件的版本、许可证与 notices。Caneda 仓库根目录的 `COPYING` 是 GPLv2 全文；ngspice 47 的源码包另有 `COPYING`，包含 Modified BSD 和部分组件适用的其他许可，构建脚本将其暂存为 `NGSPICE-COPYING`。 |
 
 ### 包内探针的判定
 
@@ -31,7 +31,7 @@
 
 ## 桌面 RC 对照
 
-`rc-step.cir` 是固定的引擎探针。输入从 1 ms 开始在 1 µs 内升到 5 V，R 为 1 kΩ，C 为 1 µF，时间常数 1 ms。检查器读取 ASCII transient RAW 的 `time` 和 `v(out)`，在线性插值后的 4 个时刻对照有限上升沿的解析解，每个允许 3 mV 误差。
+`rc-step.cir` 是固定的引擎探针，与 [rc-lowpass 原理图样例](../tests/files/samples/rc-lowpass/rc-lowpass.xsch) 使用相同的脉冲源、1 kΩ 电阻、1 µF 电容和瞬态配置。固定网表用于隔离引擎运行和读回；样例路径用于检查原理图、库符号和网表连接。固定网表检查器读取 ASCII transient RAW 的 `time` 与 `v(out)`，按样例的五个检查时刻比较有限上升沿的解析解，容差统一为 3 mV。中间检查点使用线性插值，7 ms 使用结束点。
 
 ```sh
 # 先将 ngspice 加入 PATH，或替换成安装后的可执行文件绝对路径。
@@ -40,9 +40,9 @@ python3 tests/simulation/check_rc.py --ngspice ngspice --output "$work/rc deskto
 python3 tests/simulation/check_rc.py --raw "$work/rc desktop/rc-step.raw"
 ```
 
-运行输出目录必须是新目录，避免把已有 RAW 误认为本次结果。日志和 RAW 位于该目录。这个探针用于引擎回归，后续还需用 C 的原理图实测 Caneda 生成的网表、波形视图和保存重开。
+运行输出目录必须是新目录，避免把已有 RAW 误认为本次结果。ngspice 缺失时不会创建目录；引擎启动后若失败，保留日志供排查。后续需实测 Caneda 生成的网表、波形视图和保存重开。
 
-### 11/24 桌面对照记录
+### 11/24 首次桌面对照记录
 
 在 Apple Silicon macOS 上，从 [ngspice 47 源码包](https://sourceforge.net/projects/ngspice/files/ng-spice-rework/47/ngspice-47.tar.gz/download) 构建。源码 SHA-256 为 `894e649651f1838a14095e5a5439e7d3aa63e87ede14d283173fda4fcdef675f`。配置参数为 `--without-x --disable-osdi --disable-openmp --with-fftw3=no --with-readline=no`，保留默认 XSPICE 和 KLU。
 
@@ -54,5 +54,20 @@ python3 tests/simulation/check_rc.py --raw "$work/rc desktop/rc-step.raw"
 | 6.001 ms | 4.966328 V | 4.966327 V | 0.000001 V |
 
 运行生成 719 点。运行模式和读取已有 RAW 模式均通过。检查器拒绝截断数据、能解析但波形错误的数据，以及复用已有输出目录；用新目录重跑结果一致。此记录覆盖桌面 ngspice CLI 和固定网表，Caneda UI、HAP 与模拟器内调用待验。
+
+### 11/25 D2 样例对照
+
+使用同一 ngspice 47 复跑固定网表，并由仓库的样例工具从 `rc-lowpass.xsch` 生成网表后执行仿真。
+
+```sh
+python3 tests/files/verify_samples.py --ngspice ngspice --keep rc-lowpass
+```
+
+| 入口 | 采样 | 五个检查点 |
+|---|---:|---|
+| 固定网表，插值后对解析解 | 719 点 | 全部通过，最大误差约 22 µV |
+| 原理图样例，最近采样点对 `expected.json` | 719 点 | 全部通过，最大误差约 0.398 mV |
+
+逐点比较两份 RAW，719 个时间值和 `v(out)` 值完全一致。两份报告的检查点误差不同，因为固定网表插值到目标时刻，样例工具读取最近的实际采样点。本轮样例网表来自 Python 测试工具，Caneda C++ 网表导出与 HAP 内仿真等待集成测试。
 
 参考 [ngspice 源码发布页](https://ngspice.sourceforge.io/download.html)、[ngspice Shared Library](https://ngspice.sourceforge.io/shared.html) 和 [Qt 5.15.16 鸿蒙移植说明](https://wiki.qt.io/Qt_for_HarmonyOS/Qt5.15.16_Open_Source_Release_for_HarmonyOS)。
