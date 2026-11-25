@@ -9,6 +9,8 @@ import unittest
 class PrepareHapTest(unittest.TestCase):
     def test_updates_explicit_sdk_versions_to_api_26(self):
         cases = [
+            {"compatibleSdkVersion": 20, "targetSdkVersion": 24, "compileSdkVersion": 24},
+            {"compatibleSdkVersion": "6.0.0(20)", "targetSdkVersion": 24},
             {"compatibleSdkVersion": "6.0.0(20)"},
             {"compatibleSdkVersion": "6.0.0(20)", "targetSdkVersion": "6.1.1(24)"},
             {"compatibleSdkVersion": "6.0.0(20)", "targetSdkVersion": "26.0.0",

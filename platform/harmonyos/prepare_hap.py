@@ -49,9 +49,7 @@ def main():
     sdk_version = r'(?P<key>["\']?(?:compatible|target|compile)SdkVersion["\']?\s*:\s*)'
     profile = re.sub(
         sdk_version + r'(?:"[^"]*"|\'[^\']*\'|\d+\b)',
-        lambda match: match["key"] + (
-            '"26.0.0"' if match[0][-1] in ('"', "'") else "26"
-        ),
+        r'\g<key>"26.0.0"',
         profile,
     )
 
