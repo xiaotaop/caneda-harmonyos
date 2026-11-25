@@ -43,12 +43,20 @@ def main():
     if count != 1:
         parser.error("expected one flat externalNativeOptions object in the Qt Stage template")
 
+    profile = (args.template / "build-profile.json5").read_text(encoding="utf-8")
+    # Hvigor requires compatible <= target <= compile. Keep fields that the SDK
+    # infers implicit and align every explicit version with this API 26 probe.
+    sdk_version = r'(?P<key>["\']?(?:compatible|target|compile)SdkVersion["\']?\s*:\s*)'
+    profile = re.sub(
+        sdk_version + r'(?:"[^"]*"|\'[^\']*\'|\d+\b)',
+        lambda match: match["key"] + (
+            '"26.0.0"' if match[0][-1] in ('"', "'") else "26"
+        ),
+        profile,
+    )
+
     shutil.copytree(args.template, output)
-    project_profile = output / "build-profile.json5"
-    profile = project_profile.read_text(encoding="utf-8")
-    profile = re.sub(r'("compatibleSdkVersion"\s*:\s*)"[^"]+"',
-                     r'\g<1>"26.0.0"', profile)
-    project_profile.write_text(profile, encoding="utf-8")
+    (output / "build-profile.json5").write_text(profile, encoding="utf-8")
     target_entry = output / "entry"
     (output / constants.relative_to(args.template)).write_text(updated, encoding="utf-8")
     (target_entry / "build-profile.json5").write_text(updated_profile, encoding="utf-8")
