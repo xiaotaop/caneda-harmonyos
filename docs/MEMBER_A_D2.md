@@ -8,7 +8,7 @@
 |---|---|
 | 团队分支及本次工作起点 | `feature/a-schematic`，`9b5b5e80` |
 | 被测应用 | Caneda 0.4.0，`caneda-upstream-base`，源码 `e0c11869cd0282c4d30c78c7d976b09271050214` |
-| Windows 构建 | D1 Release，x86-64，Qt 5.15.2，Qwt 6.1.6；本次复核 caneda.exe SHA-256 为 `1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43` |
+| Windows 构建 | D1 `Ninja Multi-Config` 的 Release（`--config Release`），x86-64，Qt 5.15.2，Qwt 6.1.6；本次复核 caneda.exe SHA-256 为 `1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43` |
 | 测试环境 | Windows 11 25H2，构建 26200.9974，Qt 平台 windows，设备像素比 1，主窗口 1240 × 800 |
 | 输入方式 | Qt Test 向运行中的 Caneda 顶层窗口发送鼠标移动、按下、释放和 Esc。由窗口把输入分发到侧栏或画布。 |
 
@@ -22,6 +22,8 @@
 | 点击空白处，再点击电阻本体 | 空白处点击使选择集变空，再点击后同一个电阻的 isSelected() 为真，画布保持焦点。[选中截图](evidence/a-d2/02-selected.png) |
 
 [Qt 运行记录](evidence/a-d2/interaction.json) · [探针源码](../tests/schematic/d2/probe.cpp)。坐标均为 Qt 逻辑单位。窗口布局变化后应复核同一场景格点，视口像素值可以变化。
+
+2026-11-25 按 B 的审核意见补齐 [D1 构建配置证据](evidence/a-d1/build-config.txt)：原应用通过多配置生成器选择 Release，有效编译参数含 `-O3 -DNDEBUG`。本次仅补齐配置说明，应用、探针源码及插件没有更换；沿用本页已通过的交互记录与截图。
 
 ## 复核方法
 

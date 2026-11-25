@@ -10,5 +10,7 @@
   "canedaExeSha256": "1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43",
   "testExitCode": 0,
   "scope": "Windows desktop; HarmonyOS HAP not tested",
-  "probeSourceHashFormat": "Git source with LF line endings"
+  "probeSourceHashFormat": "Git source with LF line endings",
+  "canedaConfiguration": "Release (Ninja Multi-Config; --config Release)",
+  "canedaConfigurationEvidence": "../a-d1/build-config.txt"
 }
