@@ -16,5 +16,12 @@
   "activeCodePage": "UTF-8",
   "exeSha256": "1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43",
   "installedSymbolsMatchedToTaggedContent": 107,
-  "symbolComparison": "byte-identical to the Windows git archive; CRLF normalized when comparing to Git blobs"
+  "symbolComparison": "byte-identical to the Windows git archive; CRLF normalized when comparing to Git blobs",
+  "generator": "Ninja Multi-Config",
+  "configurationTypes": [
+    "Release"
+  ],
+  "buildCommand": "cmake --build <build> --config Release --parallel 6",
+  "effectiveCxxFlags": "-Wall -Wextra -Wno-unused-parameter -O3 -DNDEBUG",
+  "configurationEvidence": "build-config.txt"
 }
