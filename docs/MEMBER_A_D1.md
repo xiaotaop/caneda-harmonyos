@@ -8,7 +8,7 @@
 | 构建源码 | 标签 `caneda-upstream-base`，提交 `e0c11869cd0282c4d30c78c7d976b09271050214` |
 | 工作分支 | `feature/a-schematic` |
 | 运行环境 | Windows x86-64，Qt 5.15.2，Qwt 6.1.6 |
-| 构建工具 | CMake 3.30.2，Ninja 1.12.1，Release 配置 |
+| 构建工具 | CMake 3.30.2，Ninja 1.12.1；生成器 `Ninja Multi-Config`，`CMAKE_CONFIGURATION_TYPES=Release`，构建与安装均指定 `--config Release` |
 | 编译与链接 | MinGW-w64 GCC 8.1.0 编译 Caneda 和 Qwt。最终由 GCC 14.2.0 驱动 GNU ld 2.43 链接同一批 Caneda 目标文件，并嵌入 Windows UTF-8 应用清单 |
 
 ## 验收记录
@@ -26,7 +26,25 @@
 
 首次启动时，`amplifier.xsym` 和 `opamp.xsym` 报解析错误，元件面板只显示内置工具。固定版的 `FormatXmlSymbol::load()` 通过 `QTextStream` 读取这些 UTF-8 文件。本机使用 Windows 代码页 936。用 Qt 5.15.2 逐一读入 107 个符号文件时，默认编码出现 9 个 XML 解析错误，显式选择 UTF-8 后为 0。已逐一核对安装的符号文件与固定标签导出的内容，Windows 导出的换行为 CRLF。
 
-复现时，从固定标签导出源码。用 Qt 5.15.2 的 `qmake src.pro -spec win32-g++ CONFIG+=release` 在 Qwt 6.1.6 的 `src` 目录生成 Makefile，以 `mingw32-make -f Makefile.Release` 构建库。配置 Caneda 时向 CMake 提供 Qt 前缀、`QWT_INCLUDE_DIR`、`QWT_LIBRARY` 和 `CMAKE_INSTALL_PREFIX`，以 Release 配置构建并安装运行资源。
+复现时，从固定标签导出源码。用 Qt 5.15.2 的 `qmake src.pro -spec win32-g++ CONFIG+=release` 在 Qwt 6.1.6 的 `src` 目录生成 Makefile，以 `mingw32-make -f Makefile.Release` 构建库。
+
+固定标签的 `CMakeLists.txt` 第 42 行确实设置了 `CMAKE_BUILD_TYPE Debug`。本次没有修改或临时覆盖该行，使用的是 **Ninja Multi-Config**：配置由 `CMAKE_CONFIGURATION_TYPES` 和构建时的 `--config` 选择。原说明漏写了生成器；仅给单配置 Ninja 传入 `-DCMAKE_BUILD_TYPE=Release` 不能复现本次配置。参见 [CMake 多配置生成器说明](https://cmake.org/cmake/help/latest/generator/Ninja%20Multi-Config.html)。
+
+下面为原构建命令的参数化写法。先把 `$src`、`$build`、`$prefix` 分别设为固定标签的源码目录、全新的构建目录和安装目录；`$qt` 为 Qt 5.15.2 前缀，`$gcc` 为 MinGW 8.1.0 的 bin 目录，`$qwt` 为已构建的 Qwt 6.1.6 目录。将编译器与 Qt 的 bin 目录加入当前进程 PATH 后执行：
+
+```powershell
+cmake -S "$src" -B "$build" -G "Ninja Multi-Config" `
+  -DCMAKE_CONFIGURATION_TYPES=Release `
+  "-DCMAKE_CXX_COMPILER=$gcc/g++.exe" "-DCMAKE_C_COMPILER=$gcc/gcc.exe" `
+  "-DCMAKE_PREFIX_PATH=$qt" "-DCMAKE_INSTALL_PREFIX=$prefix" `
+  "-DQWT_INCLUDE_DIR:PATH=$qwt/src" "-DQWT_LIBRARY:FILEPATH=$qwt/lib/libqwt.a" `
+  "-DCMAKE_INCLUDE_PATH=$qwt/src" "-DCMAKE_LIBRARY_PATH=$qwt/lib" `
+  "-DCMAKE_EXE_LINKER_FLAGS=-Wl,--dynamicbase,--nxcompat"
+cmake --build "$build" --config Release --parallel 6
+cmake --install "$build" --config Release
+```
+
+[构建配置证据](evidence/a-d1/build-config.txt) 包含原始构建日志中的配置、构建与安装命令，以及现存缓存、Ninja 生成的完整 `main.cpp` 编译命令和对应 `.ninja_log` 完成记录。有效参数为 `-O3 -DNDEBUG`，对象路径为 `src/CMakeFiles/caneda.dir/Release/main.cpp.obj`。2026-11-25 复核确认构建目录中的 `CMakeLists.txt` 与固定标签内容一致（仅归一化 CRLF），应用 SHA-256 仍与 D1、D2 记录一致。本次补充证据没有重建或更换被测应用。
 
 Windows 版在应用清单中声明进程使用 UTF-8。在下列两个文件所在目录执行 `windres -i windows-utf8.rc -O coff -o caneda-utf8.o`，将生成的对象加入 Caneda 可执行文件的链接输入即可。[Windows 应用清单](evidence/a-d1/windows-utf8.manifest) · [资源脚本](evidence/a-d1/windows-utf8.rc) · [Microsoft 的进程代码页说明](https://learn.microsoft.com/en-us/windows/apps/design/globalizing/use-utf8-code-page)
 
