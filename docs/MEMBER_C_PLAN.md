@@ -32,9 +32,9 @@ D2 计划的两项——验证沙箱路径与文件读写、验证工程保存�
 
 ## D3 进展（2026-11-26）
 
-D3 计划项「验证工程保存后重开」**通过**。本日取得可安装的 Caneda HAP（`com.caneda.desktop`，x86_64），在 MateBook Pro 模拟器内完成安装、启动、打开 RC 样例、另存、关闭、重开全流程，重开后元件与属性值与保存前一致。
+D3 计划项「验证工程保存后重开」在该链路范围内**通过**。本日取得可安装的 Caneda HAP（`com.caneda.desktop`，x86_64），在 MateBook Pro 模拟器内完成安装、启动、打开既有 RC 样例、另存 A5 副本、关闭文档与重开该副本，重开后元件与属性值与保存前一致。A1、A3、A4 本次未执行，D5 未完成，均保持待验。
 
-技术路径：以 Qt for HarmonyOS 5.15.16 交叉构建 Qt Core/Gui/Widgets/Svg/PrintSupport 与 `libqohos.so`，交叉构建 Qwt 6.1.6，把 Caneda 编成 `libcaneda.so` 后装入 Qt Stage 模板 HAP。元件库与样例随包下发到 `resfile`，`LIBRARYDIR` 指向该路径，因此 D2 记录中的 R5（库目录退化）在实测中被排除。
+技术路径：以 Qt for HarmonyOS 5.15.16 交叉构建 Qt Core/Gui/Widgets/Svg/PrintSupport 与 `libqohos.so`，交叉构建 Qwt 6.1.6，把 Caneda 编成 `libcaneda.so` 后装入 Qt Stage 模板 HAP。元件库与样例随包下发到 `resfile`，`LIBRARYDIR` 指向该路径，因此 D2 记录中的 R5（库目录退化）在包内 `resfile` 场景下未复现（D5-O1），但不构成 D5 通过。
 
 未覆盖项与原因（输入法授权页阻断文本注入、应用沙箱对 shell 只读）记在 `docs/MEMBER_C_D3_SAVE_REOPEN.md` §4。D4 计划项需要先解决这两点才能自动化，建议由组长在模拟器上预置输入法授权或提供可写共享目录。
 
