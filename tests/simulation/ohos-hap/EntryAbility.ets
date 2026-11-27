@@ -11,13 +11,15 @@ export default class EntryAbility extends UIAbility {
       const name: string = 'rc-' + Date.now().toString();
       const dir: string = this.context.filesDir + '/' + name;
       fs.mkdirSync(dir);
-      this.copyResource('rc-step.cir', dir + '/rc-step.cir');
+      this.copyResource('rc-lowpass.net', dir + '/rc-lowpass.net');
+      this.copyResource('invalid-subckt.cir', dir + '/invalid-subckt.cir');
+      this.copyResource('spinit', dir + '/spinit');
       this.copyResource('ngspice.bin', dir + '/ngspice');
       const result: string = run(dir);
       AppStorage.setOrCreate('result', result);
-      hilog.warn(0x0000, 'CanedaD3', '%{public}s %{public}s', name, result);
+      hilog.warn(0x0000, 'CanedaSpice', '%{public}s %{public}s', name, result);
     } catch (error) {
-      hilog.error(0x0000, 'CanedaD3', 'probe failed: %{public}s', JSON.stringify(error));
+      hilog.error(0x0000, 'CanedaSpice', 'probe failed: %{public}s', JSON.stringify(error));
     }
   }
 
