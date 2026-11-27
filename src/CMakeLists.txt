@@ -28,7 +28,11 @@ SET( CANEDA_SRCS
   textedit.cpp undocommands.cpp wire.cpp xmlutilities.cpp
 )
 
-ADD_EXECUTABLE( caneda ${CANEDA_SRCS} )
+IF( CMAKE_SYSTEM_NAME STREQUAL "OHOS" )
+  ADD_LIBRARY( caneda SHARED ${CANEDA_SRCS} )
+ELSE()
+  ADD_EXECUTABLE( caneda ${CANEDA_SRCS} )
+ENDIF()
 
 TARGET_LINK_LIBRARIES( caneda
   Qt5::Widgets

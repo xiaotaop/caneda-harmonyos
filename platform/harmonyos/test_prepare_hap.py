@@ -7,6 +7,35 @@ import unittest
 
 
 class PrepareHapTest(unittest.TestCase):
+    def test_caneda_uses_prebuilt_library_and_registered_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "template"
+            entry = template / "entry"
+            constants_path = "entry/src/main/ets/common/QtAppConstants.ets"
+            constants = template / constants_path
+            constants.parent.mkdir(parents=True)
+            constants.write_text('export const APP_LIBRARY_NAME = "libtest.so";')
+            (entry / "build-profile.json5").write_text(
+                '{"buildOption": {"externalNativeOptions": {}, "other": true}}'
+            )
+            (template / "build-profile.json5").write_text('{"compatibleSdkVersion": 24}')
+            (template / "AppScope").mkdir()
+            (template / "AppScope/app.json5").write_text(
+                '{"app": {"bundleName": "com.ohos.ohosqttemplate"}}'
+            )
+            output = root / "output"
+            subprocess.run(
+                [sys.executable, str(Path(__file__).with_name("prepare_hap.py")),
+                 str(template), str(root / "qt"), str(output), "--caneda"],
+                check=True,
+            )
+            self.assertIn("libcaneda.so", (output / constants_path).read_text())
+            app = json.loads((output / "AppScope/app.json5").read_text())
+            self.assertEqual(app["app"]["bundleName"], "com.caneda.desktop")
+            module_profile = json.loads((output / "entry/build-profile.json5").read_text())
+            self.assertEqual(module_profile["buildOption"], {"other": True})
+
     def test_updates_explicit_sdk_versions_to_api_26(self):
         cases = [
             {"compatibleSdkVersion": 20, "targetSdkVersion": 24, "compileSdkVersion": 24},
