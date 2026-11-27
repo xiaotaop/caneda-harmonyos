@@ -2,6 +2,7 @@
 import argparse
 import json
 from pathlib import Path
+import runpy
 import shutil
 import subprocess
 
@@ -15,15 +16,24 @@ def main():
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
     here = Path(__file__).resolve().parent
-    fixture = here.parent / "rc-step.cir"
+    verifier = runpy.run_path(str(here.parents[1] / "files/verify_samples.py"))
+    sample = verifier["SAMPLES"] / "rc-lowpass/rc-lowpass.xsch"
+    deck, skipped = verifier["generate_netlist"](
+        verifier["parse_schematic"](sample),
+        verifier["load_library_models"](),
+        verifier["load_library_ports"](),
+    )
+    if skipped:
+        parser.error(f"RC sample has unsupported components: {skipped}")
     arch = "aarch64" if args.abi == "arm64-v8a" else "x86_64"
     compiler = args.sdk / "llvm/bin" / f"{arch}-unknown-linux-ohos-clang++"
     runtime = args.sdk / "llvm/lib" / f"{arch}-linux-ohos" / "libc++_shared.so"
     cli = args.cli_stage / "ngspice"
     library = args.shared_stage / "libngspice.so"
     license_file = args.shared_stage / "NGSPICE-COPYING"
-    inputs = (fixture, compiler, runtime, cli, library, args.shared_stage / "sharedspice.h",
-              license_file)
+    spinit = args.cli_stage / "share/ngspice/scripts/spinit"
+    inputs = (compiler, runtime, cli, library, args.shared_stage / "sharedspice.h",
+              license_file, spinit)
     for path in inputs:
         if not path.is_file():
             parser.error(f"missing input: {path}")
@@ -36,6 +46,8 @@ def main():
             parser.error(f"expected a 64-bit little-endian {args.abi} ELF: {path}")
 
     out = args.output.resolve()
+    if out.exists():
+        parser.error("output must be a new directory")
     out.mkdir()
 
     def write(path, data):
@@ -109,7 +121,9 @@ def main():
 
     raw = out / module / "resources/rawfile"
     raw.mkdir()
-    shutil.copyfile(fixture, raw / fixture.name)
+    write(f"{module}/resources/rawfile/rc-lowpass.net", deck)
+    shutil.copyfile(here / "invalid-subckt.cir", raw / "invalid-subckt.cir")
+    shutil.copyfile(spinit, raw / "spinit")
     shutil.copyfile(cli, raw / "ngspice.bin")
     shutil.copyfile(license_file, raw / license_file.name)
 

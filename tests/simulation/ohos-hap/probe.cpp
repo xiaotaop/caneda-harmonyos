@@ -1,4 +1,4 @@
-// Fixed-input D3 probe. This module is only built into the test HAP.
+// Fixed-input simulation probe. This module is only built into the test HAP.
 #include <napi/native_api.h>
 #include <cerrno>
 #include <cstdlib>
@@ -35,10 +35,12 @@ std::string runCli(const std::string &dir)
 
     char *args[] = {program.data(), const_cast<char *>("-n"), const_cast<char *>("-b"),
                     const_cast<char *>("-r"), const_cast<char *>("cli.raw"),
-                    const_cast<char *>("rc-step.cir"), nullptr};
+                    const_cast<char *>("rc-lowpass.net"), nullptr};
     char ascii[] = "SPICE_ASCIIRAWFILE=1";
     char locale[] = "LC_ALL=C";
-    char *env[] = {ascii, locale, nullptr};
+    std::string libraryDir = "SPICE_LIB_DIR=" + dir;
+    std::string scriptsDir = "SPICE_SCRIPTS=" + dir;
+    char *env[] = {ascii, locale, libraryDir.data(), scriptsDir.data(), nullptr};
     const char *workingDirectory = dir.c_str();
     pid_t pid = fork();
     if (pid == 0) {
@@ -85,18 +87,28 @@ std::string runCli(const std::string &dir)
 }
 
 bool spiceExit = false;
+bool attemptedCircuit = false;
+std::string diagnostics;
+
+int captureDiagnostic(char *message, int, void *)
+{
+    if (message)
+        diagnostics += std::string(message) + '\n';
+    return 0;
+}
+
 int controlledExit(int, bool, bool, int, void *)
 {
     spiceExit = true;
     return 0;
 }
 
-std::string runShared(const std::string &dir, const char *output)
+std::string runShared(const std::string &dir, const char *deck, const char *output)
 {
     static bool initialized = false;
     if (!initialized) {
         spiceExit = false;
-        if (ngSpice_Init(nullptr, nullptr, controlledExit, nullptr, nullptr,
+        if (ngSpice_Init(captureDiagnostic, nullptr, controlledExit, nullptr, nullptr,
                          nullptr, nullptr) != 0 || spiceExit)
             return "init failed";
         initialized = true;
@@ -107,11 +119,23 @@ std::string runShared(const std::string &dir, const char *output)
     char run[] = "run";
     char axisName[] = "time";
     char voltageName[] = "v(out)";
-    (void)ngSpice_Command(destroy);
-    (void)ngSpice_Command(remove);
-    std::string source = "source " + dir + "/rc-step.cir";
-    if (ngSpice_Command(ascii) || ngSpice_Command(source.data()) ||
-        ngSpice_Command(run) || spiceExit)
+    if (spiceExit || ngSpice_Command(destroy) ||
+        (attemptedCircuit && ngSpice_Command(remove)) ||
+        std::string(ngSpice_CurPlot()) != "const")
+        return "cleanup failed";
+
+    diagnostics.clear();
+    attemptedCircuit = true;
+    std::string source = "source " + dir + "/" + deck;
+    const int loadStatus = ngSpice_Command(source.data());
+    if (!output) {
+        if (!spiceExit && diagnostics.find("unknown subckt") != std::string::npos &&
+            std::string(ngSpice_CurPlot()) == "const")
+            return "unknown subckt; plot=const";
+        return "expected rejection missing";
+    }
+    if (loadStatus || ngSpice_Command(ascii) || ngSpice_Command(run) || spiceExit ||
+        std::string(ngSpice_CurPlot()).compare(0, 4, "tran") != 0)
         return "simulation failed";
 
     pvector_info axis = ngGet_Vec_Info(axisName);
@@ -146,9 +170,11 @@ napi_value runProbe(napi_env env, napi_callback_info info)
 
     const std::string dir(path, length);
     const std::string cli = runCli(dir);
-    const std::string first = runShared(dir, "shared.raw");
-    const std::string repeat = runShared(dir, "shared-repeat.raw");
-    const std::string summary = "cli=" + cli + "; shared=" + first + "; repeat=" + repeat;
+    const std::string first = runShared(dir, "rc-lowpass.net", "shared.raw");
+    const std::string invalid = runShared(dir, "invalid-subckt.cir", nullptr);
+    const std::string retry = runShared(dir, "rc-lowpass.net", "shared-retry.raw");
+    const std::string summary = "cli=" + cli + "; shared=" + first +
+        "; invalid=" + invalid + "; retry=" + retry;
     napi_value result;
     napi_create_string_utf8(env, summary.c_str(), summary.size(), &result);
     return result;
