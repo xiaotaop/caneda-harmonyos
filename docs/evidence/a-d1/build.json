@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/xiaotaop/caneda-harmonyos",
+  "tag": "caneda-upstream-base",
+  "commit": "e0c11869cd0282c4d30c78c7d976b09271050214",
+  "projectVersion": "0.4.0",
+  "platform": "Windows x86-64",
+  "configuration": "Release",
+  "cmake": "3.30.2",
+  "ninja": "1.12.1",
+  "qt": "5.15.2",
+  "qwt": "6.1.6",
+  "qwtSourceSha256": "99460d31c115ee4117b0175d885f47c2c590d784206f09815dc058fbe5ede1f6",
+  "objectCompiler": "MinGW-w64 GCC 8.1.0",
+  "linkDriver": "MinGW-w64 GCC 14.2.0",
+  "linker": "GNU ld 2.43",
+  "activeCodePage": "UTF-8",
+  "exeSha256": "1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43",
+  "installedSymbolsMatchedToTaggedContent": 107,
+  "symbolComparison": "byte-identical to the Windows git archive; CRLF normalized when comparing to Git blobs",
+  "generator": "Ninja Multi-Config",
+  "configurationTypes": [
+    "Release"
+  ],
+  "buildCommand": "cmake --build <build> --config Release --parallel 6",
+  "effectiveCxxFlags": "-Wall -Wextra -Wno-unused-parameter -O3 -DNDEBUG",
+  "configurationEvidence": "build-config.txt"
+}
