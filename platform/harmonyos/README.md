@@ -35,5 +35,80 @@ The qtbase build directory can be used as the Qt prefix for the probe.
 The official Stage template generated with API 26 built with Hvigor.
 The debug HAP installed with hdc and QAbility displayed the
 Caneda · Qt Widgets window on MateBook Pro (HarmonyOS 7.0, x86_64).
-This confirms the platform probe. Caneda project editing, Qwt and ngspice
-still require application integration.
+This confirms the platform probe.
+
+## Caneda debug HAP (D4)
+
+On Windows, use DevEco Studio 26 with Native SDK 26 and the DevEco CLI
+configured in `DEVECO_SDK_HOME` and `DEVECO_CLI_CLT_PATH`. Run with
+PowerShell 7 and Python 3.9 or later.
+
+Prepare the following inputs:
+
+- The official Qt 5.15.16 HarmonyOS Stage template under
+  `qtbase/src/harmonyos/templates`.
+- A HarmonyOS x86_64 Qt prefix with the host build tools, the Core, Gui,
+  Widgets, Svg, PrintSupport, OpenGL, Concurrent and Network modules, and
+  the OHOS platform and SVG plugins. A Qt cross-build tree with these
+  components in the expected prefix layout also works.
+- Qwt 6.1.6 headers and `libqwt.so` built for the same ABI and Qt prefix.
+  Build `src/src.pro` with that Qt's qmake. With SDK Clang 15 and the Qt
+  OHOS mkspec's `-Werror`, pass
+  `QMAKE_CXXFLAGS+=-Wno-error=deprecated-copy-with-user-provided-copy`
+  to qmake for Qwt's legacy copy assignment warning.
+
+From the repository root, replace the following paths with your local inputs.
+Use a new build directory for each packaging run.
+
+```powershell
+./platform/harmonyos/build_caneda_hap.ps1 `
+  -Template C:/qt-ohos/qtbase/src/harmonyos/templates `
+  -QtPrefix C:/qt-ohos/x86_64 `
+  -QwtInclude C:/qwt-6.1.6/src `
+  -QwtLibrary C:/qwt-build/lib/libqwt.so `
+  -BuildDirectory C:/caneda-build/d4
+```
+
+The script cross-builds the current Caneda sources, stages native libraries
+and resources, then runs Hvigor in debug mode. It prints the HAP path and
+SHA-256. The HAP uses `com.caneda.desktop` with the official Qt Stage ability
+entry. The retained probe command above still generates the template bundle.
+
+On the API 26 x86_64 PC emulator, install this unsigned debug package
+and start the application:
+
+```powershell
+hdc list targets
+hdc install C:/caneda-build/d4/stage/entry/build/default/outputs/default/entry-default-unsigned.hap
+hdc shell aa start -a QAbility -b com.caneda.desktop
+```
+
+Verify that the Caneda main window and component library load. Use the bundled
+RC sample at `share/caneda/samples/rc-lowpass/rc-lowpass.xsch` under the app
+resource directory for a file-open smoke test. This debug build contains Qwt
+for the waveform view. The ngspice engine is integrated separately.
+
+GitHub Actions checks the Stage generator and the desktop build on a hosted
+Linux runner. The PowerShell script runs the HarmonyOS packaging on the
+configured DevEco host.
+
+### D4 emulator evidence
+
+On 2026-11-27, the D4 unsigned debug HAP built from the sources in
+`c49f254f` installed and launched on the MateBook Pro emulator
+(HarmonyOS 7.0.0.107, API 26, x86_64).
+
+| Package field | Verified value |
+|---|---|
+| Bundle name | `com.caneda.desktop` |
+| Version | `1.0.0` (version code `1000000`) |
+| File size | 33,944,321 bytes |
+| SHA-256 | `f7064c4785e9ef43666e848912f29a9e65d27c9cf58f1927c192a7bcd065e8a2` |
+
+The [emulator screenshot](../../docs/evidence/leader-d4/01-open-rc-sample.jpeg)
+shows the component library and bundled RC schematic after launching with
+`io.qt.appArgsJson` pointing to
+`/data/storage/el1/bundle/entry/resources/resfile/share/caneda/samples/rc-lowpass/rc-lowpass.xsch`.
+This smoke test covered installation, startup, library loading, and opening
+the bundled sample. Editing, saving, and ngspice execution were outside the
+smoke test.
