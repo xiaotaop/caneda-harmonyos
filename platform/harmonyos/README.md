@@ -91,3 +91,24 @@ for the waveform view. The ngspice engine is integrated separately.
 GitHub Actions checks the Stage generator and the desktop build on a hosted
 Linux runner. The PowerShell script runs the HarmonyOS packaging on the
 configured DevEco host.
+
+### D4 emulator evidence
+
+On 2026-11-27, the D4 unsigned debug HAP built from the sources in
+`c49f254f` installed and launched on the MateBook Pro emulator
+(HarmonyOS 7.0.0.107, API 26, x86_64).
+
+| Package field | Verified value |
+|---|---|
+| Bundle name | `com.caneda.desktop` |
+| Version | `1.0.0` (version code `1000000`) |
+| File size | 33,944,321 bytes |
+| SHA-256 | `f7064c4785e9ef43666e848912f29a9e65d27c9cf58f1927c192a7bcd065e8a2` |
+
+The [emulator screenshot](../../docs/evidence/leader-d4/01-open-rc-sample.jpeg)
+shows the component library and bundled RC schematic after launching with
+`io.qt.appArgsJson` pointing to
+`/data/storage/el1/bundle/entry/resources/resfile/share/caneda/samples/rc-lowpass/rc-lowpass.xsch`.
+This smoke test covered installation, startup, library loading, and opening
+the bundled sample. Editing, saving, and ngspice execution were outside the
+smoke test.
