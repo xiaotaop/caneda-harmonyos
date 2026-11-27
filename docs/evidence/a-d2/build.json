@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-25",
+  "sourceBase": "9b5b5e80e3bd2c307f67de0bbff212fbf74b165d",
+  "qt": "5.15.2",
+  "compiler": "MinGW-w64 GCC 8.1.0",
+  "build": "Clean directory; qmake probe.pro -spec win32-g++ CONFIG+=release; mingw32-make -f Makefile.Release -j2",
+  "moc": "Generated from probe.cpp by Qt 5.15.2 moc",
+  "probeSourceSha256": "a843815cc7443fa5e959cdeeb32f7b864df03f3ce2538fad6907bdc9ca716910",
+  "pluginSha256": "542cd36ddb0a7d038f26da9363385d17a4959f6faf04cb3ff5d1cae7ca08555b",
+  "canedaExeSha256": "1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43",
+  "testExitCode": 0,
+  "scope": "Windows desktop; HarmonyOS HAP not tested",
+  "probeSourceHashFormat": "Git source with LF line endings",
+  "canedaConfiguration": "Release (Ninja Multi-Config; --config Release)",
+  "canedaConfigurationEvidence": "../a-d1/build-config.txt"
+}
