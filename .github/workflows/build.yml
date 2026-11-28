@@ -1,0 +1,28 @@
+name: Caneda build checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  desktop-and-stage:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Test the Stage project generator
+        run: python3 platform/harmonyos/test_prepare_hap.py
+      - name: Install desktop build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build qtbase5-dev libqt5svg5-dev qttools5-dev libqwt-qt5-dev
+      - name: Build desktop Caneda
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake --build build --parallel 2

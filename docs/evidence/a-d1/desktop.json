@@ -1,0 +1,23 @@
+{
+    "application": "Caneda",
+    "canvasClass": "Caneda::GraphicsView",
+    "componentPaths": {
+        "Capacitor": "Components / Passive / Capacitor",
+        "Resistor": "Components / Passive / Resistor"
+    },
+    "dialog": "New File",
+    "differentScene": true,
+    "drawnItems": 0,
+    "error": "",
+    "newAction": "&New...",
+    "platform": "windows",
+    "qt": "5.15.2",
+    "sceneItems": 2,
+    "selectedType": "&Schematic file",
+    "tabs": [
+        "Untitled",
+        "Untitled"
+    ],
+    "version": "0.4.0",
+    "windowTitle": "Untitled[*] - Caneda"
+}

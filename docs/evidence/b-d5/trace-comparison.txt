@@ -1,0 +1,8 @@
+D5 fresh desktop schematic RC: 719 points, exact time match, max voltage difference 0 V
+D1 desktop fixed RC: 719 points, exact time match, max voltage difference 0 V
+D2 desktop fixed RC: 719 points, exact time match, max voltage difference 0 V
+D2 desktop schematic RC: 719 points, exact time match, max voltage difference 0 V
+D3 arm64 HAP: 719 points, exact time match, max voltage difference 0 V
+D3 arm64 HAP second run: 719 points, exact time match, max voltage difference 0 V
+D4 arm64 HAP: 719 points, exact time match, max voltage difference 0 V
+D4 arm64 HAP retry: 719 points, exact time match, max voltage difference 0 V

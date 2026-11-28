@@ -1,0 +1,15 @@
+{
+    "components": 2,
+    "connectedPinX": [
+        -60,
+        60
+    ],
+    "error": "",
+    "openPinX": [
+        -100,
+        100
+    ],
+    "platform": "windows",
+    "qt": "5.15.2",
+    "wires": 1
+}

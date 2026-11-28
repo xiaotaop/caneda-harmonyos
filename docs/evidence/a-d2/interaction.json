@@ -1,0 +1,31 @@
+{
+    "architecture": "x86_64",
+    "canvas": "Caneda::GraphicsView",
+    "canvasFocusAfterPlacement": true,
+    "canvasFocusAfterSelection": true,
+    "clearSelection": true,
+    "componentPosition": [
+        40,
+        30
+    ],
+    "cursorReadout": "40 : 30",
+    "devicePixelRatio": 1,
+    "error": "",
+    "os": "Windows 10 Version 2009",
+    "panelFocus": true,
+    "panelSelection": "Resistor",
+    "placedCount": 1,
+    "platform": "windows",
+    "qt": "5.15.2",
+    "sceneClick": [
+        40,
+        30
+    ],
+    "selectedComponent": true,
+    "title": "Untitled[*] - Caneda",
+    "version": "0.4.0",
+    "viewportClick": [
+        346,
+        256
+    ]
+}

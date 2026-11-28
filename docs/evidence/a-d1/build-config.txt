@@ -1,0 +1,25 @@
+D1 build configuration audit (2026-11-25)
+Existing build tree: F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\build
+No rebuild or executable replacement performed.
+Source CMakeLists.txt matches fixed tag after CRLF normalization.
+Source CMakeLists.txt SHA256 (LF): 4e334f7ee3680f8e71d82c0d5b722a3c118f55f7879a1e0e92f17abeba959fe7
+
+Original build.log configure/build/install commands:
+> cmake -S F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\source -B F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\build -G Ninja Multi-Config -DCMAKE_CONFIGURATION_TYPES=Release -DCMAKE_EXE_LINKER_FLAGS=-Wl,--dynamicbase,--nxcompat -DCMAKE_CXX_COMPILER=F:\codes\LiteX_trans\caneda-d1\native\Qt\Tools\mingw810_64\bin\g++.exe -DCMAKE_C_COMPILER=F:\codes\LiteX_trans\caneda-d1\native\Qt\Tools\mingw810_64\bin\gcc.exe -DCMAKE_PREFIX_PATH=F:\codes\LiteX_trans\caneda-d1\native\Qt\5.15.2\mingw81_64 -DCMAKE_INSTALL_PREFIX=F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\install -DQWT_INCLUDE_DIR:PATH=F:\codes\LiteX_trans\caneda-d1\native\qwt-6.1.6\src -DQWT_LIBRARY:FILEPATH=F:\codes\LiteX_trans\caneda-d1\native\qwt-6.1.6\lib\libqwt.a -DCMAKE_INCLUDE_PATH=F:\codes\LiteX_trans\caneda-d1\native\qwt-6.1.6\src -DCMAKE_LIBRARY_PATH=F:\codes\LiteX_trans\caneda-d1\native\qwt-6.1.6\lib
+> cmake --build F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\build --config Release --parallel 6
+> cmake --install F:\codes\LiteX_trans\caneda-d1\native\windows-20261124-234716-210\build --config Release
+
+Existing CMakeCache.txt values:
+CMAKE_CONFIGURATION_TYPES:UNINITIALIZED=Release
+CMAKE_CXX_COMPILER:STRING=F:/codes/LiteX_trans/caneda-d1/native/Qt/Tools/mingw810_64/bin/g++.exe
+CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
+CMAKE_GENERATOR:INTERNAL=Ninja Multi-Config
+
+Effective main.cpp compile command from ninja -f build-Release.ninja -t commands:
+F:\codes\LiteX_trans\caneda-d1\native\Qt\Tools\mingw810_64\bin\g++.exe -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_SVG_LIB -DQT_WIDGETS_LIB -DCMAKE_INTDIR=\"Release\" -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build/src -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/source/src -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build/src/caneda_autogen/include_Release -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/source/src/dialogs -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/source/src/paintings -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/source/src/tools -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build/src/dialogs -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build/src/paintings -IF:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/build/src/tools -IF:/codes/LiteX_trans/caneda-d1/native/qwt-6.1.6/src -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtWidgets -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtGui -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtANGLE -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtCore -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/./mkspecs/win32-g++ -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtSvg -isystem F:/codes/LiteX_trans/caneda-d1/native/Qt/5.15.2/mingw81_64/include/QtPrintSupport -Wall -Wextra -Wno-unused-parameter -O3 -DNDEBUG -MD -MT src/CMakeFiles/caneda.dir/Release/main.cpp.obj -MF src\CMakeFiles\caneda.dir\Release\main.cpp.obj.d -o src/CMakeFiles/caneda.dir/Release/main.cpp.obj -c F:/codes/LiteX_trans/caneda-d1/native/windows-20261124-234716-210/source/src/main.cpp
+
+Original .ninja_log completion record for main.cpp.obj:
+21088	22310	8172384987800473	src/CMakeFiles/caneda.dir/Release/main.cpp.obj	51d08636acf45d8b
+
+Current verified executable SHA256: 1486d753c933fa27334e03124454cdad5d24b613def64f6064d737ab89d6dd43
+The final UTF-8 executable uses the same Release objects with the separately documented GCC 14.2 link step.
