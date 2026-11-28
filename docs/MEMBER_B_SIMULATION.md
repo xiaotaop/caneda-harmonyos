@@ -70,4 +70,6 @@ python3 tests/files/verify_samples.py --ngspice ngspice --keep rc-lowpass
 
 逐点比较两份 RAW，719 个时间值和 `v(out)` 值完全一致。两份报告的检查点误差不同，因为固定网表插值到目标时刻，样例工具读取最近的实际采样点。本轮样例网表来自 Python 测试工具，Caneda C++ 网表导出与 HAP 内仿真等待集成测试。
 
+11/28 D5 已归档固定网表、桌面样例和 arm64 HAP 的原始 RC 波形及复核命令。[D5 RC 对照归档](MEMBER_B_D5.md)
+
 参考 [ngspice 源码发布页](https://ngspice.sourceforge.io/download.html)、[ngspice Shared Library](https://ngspice.sourceforge.io/shared.html) 和 [Qt 5.15.16 鸿蒙移植说明](https://wiki.qt.io/Qt_for_HarmonyOS/Qt5.15.16_Open_Source_Release_for_HarmonyOS)。
