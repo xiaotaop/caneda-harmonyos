@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE caneda>
+<caneda version="0.4.0">
+    <components>
+        <component name="Capacitor" library="Passive" pos="80,0" transform="1,0,0,1,0,0">
+            <properties pos="-24,11">
+                <property name="C" value="1e-12" visible="true"/>
+                <property name="dtemp" value="1.0" visible="false"/>
+                <property name="ic" value="0" visible="false"/>
+                <property name="label" value="C1" visible="true"/>
+                <property name="m" value="1.0" visible="false"/>
+                <property name="model" value="C" visible="false"/>
+                <property name="scale" value="1.0" visible="false"/>
+                <property name="tc1" value="0.0" visible="false"/>
+                <property name="tc2" value="0.0" visible="false"/>
+                <property name="temp" value="26.5" visible="false"/>
+            </properties>
+        </component>
+        <component name="Resistor" library="Passive" pos="-80,0" transform="1,0,0,1,0,0">
+            <properties pos="-24,6">
+                <property name="R" value="50" visible="true"/>
+                <property name="dtemp" value="1.0" visible="false"/>
+                <property name="label" value="R1" visible="true"/>
+                <property name="m" value="1.0" visible="false"/>
+                <property name="noisy" value="0" visible="false"/>
+                <property name="scale" value="1.0" visible="false"/>
+                <property name="tc1" value="0.0" visible="false"/>
+                <property name="tc2" value="0.0" visible="false"/>
+                <property name="temp" value="26.5" visible="false"/>
+            </properties>
+        </component>
+    </components>
+    <wires>
+        <wire start="-60,0" end="60,0"/>
+    </wires>
+</caneda>
