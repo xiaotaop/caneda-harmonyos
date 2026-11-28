@@ -37,7 +37,7 @@
 | B1 | 空文件 | 打开 0 字节 `.xsch` | 报错并安全返回，不崩溃 | **通过** | 显示 `Premature end of document.`，关闭后应用继续可用。[空文件错误](evidence/c-d4/b1-empty-pkg.jpeg) |
 | B2 | 截断 XML | 打开写到一半的 `.xsch` | 报错并安全返回 | **通过** | 显示 `Premature end of document.`，应用未崩溃。[截断 XML 错误](evidence/c-d4/b2-truncated.jpeg) |
 | B3 | 非法根元素 | 根元素不是 `caneda` | 提示"不是 Caneda 文件" | **通过** | 显示 `Not a caneda file or probably malformatted file`。[非法根元素错误](evidence/c-d4/b3-wrong-root.jpeg) |
-| B4 | 版本过高 | `version` 高于 0.4.0 | 拒绝打开并提示 | 待验 | 本轮无独立证据：`b4-future-version.jpeg` 与 B3 的 `b3-wrong-root.jpeg` 为同一文件（Git blob 均为 `3a128d43`），通用错误文案无法区分正在打开的文件，持久化日志中也没有 `future-version` 记录。需补能把 `future-version.xsch` 与拒绝结果关联的日志或截图后才可判通过 |
+| B4 | 版本过高 | `version` 高于 0.4.0 | 拒绝打开并提示 | **通过** | 2026-11-28 补测：`io.qt.appArgsJson` 日志明确指向 `future-version.xsch`，界面显示 `Xml parse error / Not a caneda file or probably malformatted file`，进程 PID 6859 保持存活。[截图](evidence/c-d5/b4-future-version-d5.jpeg) · [日志](evidence/c-d5/b4-future-version-d5-hilog.log) · [D5 记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md) |
 | B5 | 未知元件 | 引用库中不存在的元件名 | 跳过该元件并告警，其余正常 | **通过** | 跳过 `NoSuchPart`，其余 `V1/R1/C1/Sim1` 正常显示；持久化日志记录 `Warning: Found unknown element "NoSuchPart" , skipping...`。[工程仍打开](evidence/c-d4/b5-unknown-component.jpeg) · [持久化日志](evidence/c-d4/b5-b6-b7-persist-hilog.log) |
 | B6 | 缺库符号 | 库路径不可达 | 有明确提示，不崩溃 | **部分通过** | 缺失 `MissingLib` 中的 `Voltage Source Pulse` 被跳过，其余元件正常显示且不崩溃；但界面无提示，仅日志告警。已登记 C-D4-02。[工程仍打开](evidence/c-d4/b6-missing-library.jpeg) · [持久化日志](evidence/c-d4/b5-b6-b7-persist-hilog.log) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
 | B7 | 悬空连线 | 打开含未连接引脚的工程 | 正常打开，网表跳过未连接节点 | **部分通过** | 工程打开且悬空线段可见。仿真在网表生成前被 `Missing simulator backend...` 拦截，网表跳过未连接节点未实测；源码推导见 D4 记录 §5。[工程打开](evidence/c-d4/b7-dangling-wire.jpeg) · [仿真尝试](evidence/c-d4/b7-simulate-attempt.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
@@ -61,7 +61,7 @@
 | D2 | 安装后首次启动 | 首次启动应用 | 窗口正常，无崩溃 | **通过**（D3 包） | 主窗口、菜单栏、元件面板与画布正常；首版因缺 `libQt5OpenGL.so` 启动即崩，补齐后稳定。证据来自 **D3 包**（`d5970a8b`）；D4 包沿用同一 `libcaneda.so` 与库集合，但未单独留启动截图。[01-launch](evidence/c-d3/01-launch.jpeg) |
 | D3 | 文件选择回调 | 通过平台桥接选择样例文件 | 能拿到路径并打开 | **通过**（D3 包） | 两条路径均验证：系统选择器选中文件可打开；`io.qt.appArgsJson` 启动参数亦能把路径传入 `main()`。证据来自 **D3 包**；D4 包的等价行为见 D4 行的取消用例与 B1–B7 的包内打开。[07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg) |
 | D4 | 文件选择取消 | 在系统文件对话框中取消 | 应用收到取消状态，不崩溃 | **通过** | 系统打开对话框取消后返回原文档，标签页与画布内容保持，应用不崩溃。[取消后](evidence/c-d4/d4-cancel-open.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
-| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | 见下方 D5 补充观察：包内 `resfile` 读取与系统选择器保存已有证据，但尚未在应用自身可写目录完成实际读写校验，D5 保持待验 |
+| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | 2026-11-28 两套样例桌面回归均 PASS（[记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md)），但尚未在应用自身可写目录完成实际读写；包内 `resfile` 读取与系统选择器保存不能替代，D5 保持待验 |
 
 ### D5 补充观察（不改变 D5 状态）
 
@@ -72,9 +72,9 @@
 
 D5 要求的是应用在自身可写目录完成读写；上述两项仅证明包内资源可读和系统选择器写入成功，不等同于 D5 通过。
 
-## 桌面基线（D1 已完成）
+## 桌面基线（D1、D5）
 
-无 GUI 环境下的样例回归，用于确认样例本身仍有效：
+无 GUI 环境下的样例回归，用于确认样例本身仍有效。D5 于 2026-11-28 重新执行并归档结果：
 
 | 项目 | 结果 | 证据 |
 |---|---|---|
@@ -134,11 +134,10 @@ D4 已完成 A4、A6、A7、A8、B1–B7 与 D4 的模拟器实测，结果和�
 - 用户自定义文件名保存（模拟器输入法授权页阻断文本注入，见 `docs/MEMBER_C_D3_SAVE_REOPEN.md` §4）。
 - A7 的「保存目录无残留文件」核验（系统媒体目录对 shell 不可读）。
 - A8 的写入/关闭失败分支：打开成功后 `stream << text` 或 `file.close()` 失败时的提示、撤销栈与文档状态、原文件完整性（承接 D2-8）。
-- B4 版本过高的独立证据（现有截图与 B3 重复，需重跑并单独归档）。
 - 保存中断后的文件完整性，以及保存后文件的字节级校验（保存目标经系统文件访问框架落盘，`/storage/media/100/local/files` 对 shell 不可读）。
 - B7 的实际网表生成与未连接节点跳过（本包缺少仿真后端）。
 - C2–C6 样例编辑、仿真与失败恢复。
-- D1 干净安装、D5 应用自身可写目录读写。
+- D1 干净安装、D5 应用自身可写目录读写（D5 仍缺应用自身沙箱路径的实测证据）。
 - A8 重复空错误框、B6 缺库无界面提示修复后复测。
 - 非 ASCII 标签的保存与重开（保存编码依赖系统 locale，见 D2 记录 R4）。
 - PC 窗口尺寸、键鼠行为与真机行为本期不覆盖，按计划记录。
