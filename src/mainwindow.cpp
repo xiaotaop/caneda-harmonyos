@@ -219,23 +219,41 @@ namespace Caneda
         DocumentViewManager *manager = DocumentViewManager::instance();
 
         if(fileName.isEmpty()) {
-#ifdef Q_OS_OHOS
-            // The native picker does not expose the application's private
-            // files directory, where Save As stores documents on OHOS.
-            QFileDialog dialog(this, tr("Open File"));
-            dialog.setOption(QFileDialog::DontUseNativeDialog);
-            dialog.setFileMode(QFileDialog::ExistingFile);
-            dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
-            dialog.setNameFilters(manager->fileNameFilters());
-            if (dialog.exec()) {
-                fileName = dialog.selectedFiles().value(0);
-            }
-#else
             fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                                                     manager->fileNameFilters().join(QString(";;")));
-#endif
         }
 
+        if(!fileName.isEmpty()) {
+            manager->openFile(fileName);
+        }
+    }
+
+    /*!
+     * \brief Opens a document from the application's private files directory.
+     *
+     * The native HarmonyOS document picker only exposes shared media
+     * locations, so the application's own files directory is reached through
+     * Qt's dialog, which is rooted at QStandardPaths::HomeLocation (that is
+     * what the OHOS Qt platform maps the private directory to). The system
+     * picker entry stays available through open(), so documents outside the
+     * application sandbox can still be opened.
+     *
+     * \sa open(), saveAsToAppStorage()
+     */
+    void MainWindow::openFromAppStorage()
+    {
+        DocumentViewManager *manager = DocumentViewManager::instance();
+
+        QFileDialog dialog(this, tr("Open File from App Storage"));
+        dialog.setOption(QFileDialog::DontUseNativeDialog);
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        dialog.setNameFilters(manager->fileNameFilters());
+        dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        if (!dialog.exec()) {
+            return;
+        }
+
+        const QString fileName = dialog.selectedFiles().value(0);
         if(!fileName.isEmpty()) {
             manager->openFile(fileName);
         }
@@ -321,6 +339,33 @@ namespace Caneda
      */
     void MainWindow::saveAs()
     {
+        saveAsTo(false);
+    }
+
+    /*!
+     * \brief Saves the current document into the application's private files directory.
+     *
+     * The native HarmonyOS document picker saves only to shared media
+     * locations, so the private directory is reached through Qt's dialog,
+     * rooted at QStandardPaths::HomeLocation. The system picker entry stays
+     * available through saveAs(), so documents can still be written to
+     * shared locations the user selects.
+     *
+     * \sa saveAs(), openFromAppStorage()
+     */
+    void MainWindow::saveAsToAppStorage()
+    {
+        saveAsTo(true);
+    }
+
+    /*!
+     * \brief Shared implementation of Save As.
+     *
+     * \param useAppStorage True to open Qt's own dialog rooted at the private
+     * files directory instead of the platform dialog.
+     */
+    void MainWindow::saveAsTo(bool useAppStorage)
+    {
         DocumentViewManager *manager = DocumentViewManager::instance();
         IDocument *document = manager->currentDocument();
         if(!document) {
@@ -334,14 +379,11 @@ namespace Caneda
         dialog.setNameFilters(manager->currentDocument()->context()->fileNameFilters());
         dialog.setDefaultSuffix(manager->currentDocument()->context()->defaultSuffix());
 
-#ifdef Q_OS_OHOS
-        // The native HarmonyOS document picker saves only to media locations.
-        // Use Qt's dialog so Save As can target the application's private
-        // files directory, which is exposed as HOME by the OHOS Qt platform.
-        dialog.setOption(QFileDialog::DontUseNativeDialog);
-        dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
-        dialog.selectFile(QFileInfo(document->fileName()).fileName());
-#endif
+        if (useAppStorage) {
+            dialog.setOption(QFileDialog::DontUseNativeDialog);
+            dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+            dialog.selectFile(QFileInfo(document->fileName()).fileName());
+        }
 
         QString fileName;
         if (dialog.exec()) {
@@ -969,6 +1011,13 @@ namespace Caneda
         action->setWhatsThis(tr("Open File\n\nOpens an existing document"));
         connect(action, &QAction::triggered, this, [=](){this->open();});  // Used lambda function to overcome default parameter
 
+#ifdef Q_OS_OHOS
+        action = am->createAction("fileOpenAppStorage", Caneda::icon("document-open"), tr("Open from App &Storage..."));
+        action->setStatusTip(tr("Opens a document from the application's private storage"));
+        action->setWhatsThis(tr("Open from App Storage\n\nOpens a document from the application's private storage"));
+        connect(action, &QAction::triggered, this, &MainWindow::openFromAppStorage);
+#endif
+
         for(uint i=0; i<maxRecentFiles; i++) {
             action = am->createRecentFilesAction();
             connect(action, &QAction::triggered, this, &MainWindow::openRecent);
@@ -988,6 +1037,13 @@ namespace Caneda
         action->setStatusTip(tr("Saves the current document under a new filename"));
         action->setWhatsThis(tr("Save As\n\nSaves the current document under a new filename"));
         connect(action, &QAction::triggered, this, &MainWindow::saveAs);
+
+#ifdef Q_OS_OHOS
+        action = am->createAction("fileSaveAsAppStorage", Caneda::icon("document-save-as"), tr("Save as to App &Storage..."));
+        action->setStatusTip(tr("Saves the current document into the application's private storage"));
+        action->setWhatsThis(tr("Save As to App Storage\n\nSaves the current document into the application's private storage"));
+        connect(action, &QAction::triggered, this, &MainWindow::saveAsToAppStorage);
+#endif
 
         action = am->createAction("fileSaveAll", Caneda::icon("document-save-all"), tr("Save &all"));
         action->setStatusTip(tr("Saves all open documents"));
@@ -1394,6 +1450,9 @@ namespace Caneda
         subMenu->addAction(am->actionForName("fileNewText"));
 
         menu->addAction(am->actionForName("fileOpen"));
+#ifdef Q_OS_OHOS
+        menu->addAction(am->actionForName("fileOpenAppStorage"));
+#endif
 
         subMenu = menu->addMenu(Caneda::icon("document-open-recent"), tr("Open &Recent"));
         for(int i=0; i<maxRecentFiles; i++) {
@@ -1410,6 +1469,9 @@ namespace Caneda
         menu->addAction(am->actionForName("fileSave"));
         menu->addAction(am->actionForName("fileSaveAll"));
         menu->addAction(am->actionForName("fileSaveAs"));
+#ifdef Q_OS_OHOS
+        menu->addAction(am->actionForName("fileSaveAsAppStorage"));
+#endif
         menu->addAction(am->actionForName("filePrint"));
         menu->addAction(am->actionForName("fileExportImage"));
 

@@ -86,5 +86,6 @@ D5 计划项「更新样例和验收表」已形成当日可提交交付。完�
 - 两套样例在 Windows 桌面用 Python 3.13.11 + ngspice-47 重新回归，均 `PASS`：RC 低通 719 点、最大偏差 0.000398 V；二极管整流 6008 点、最大偏差 0.093940 V；命令退出码 0。
 - 忽略行尾差异后，两套 `.xsch` 与 `expected.json` 无实际内容改动，既有预期值继续有效。证据归档到 `docs/evidence/c-d5/verify-samples.log` 与 `docs/evidence/c-d5/samples-sha256.txt`。
 - B4 版本过高补测通过：修正 `aa start` 的 JSON 引号传递后，日志能把 `io.qt.appArgsJson` 与 `future-version.xsch` 唯一关联，界面显示拒绝提示且进程保持存活。B4 在验收表改判为通过。
-- D5「应用自身可写目录读写」已通过。`MainWindow::open()` / `saveAs()` 在 OHOS 下改用 Qt 非原生文件对话框，默认 `QStandardPaths::HomeLocation`，设备侧为 `/data/app/el2/100/base/com.caneda.desktop/files`。
-- 最新 HAP（SHA-256 `026ec6d601c3bdc2f855a835f7f00550fab318fb9d4760888952ddda38a57a4d`，32,043,122 字节）覆盖安装后，Save As 成功写入 `rc-lowpass.xsch`（3575 字节），应用内 Open 可看到并打开该文件；File > Close 后再次 Open 仍正常。证据见 `docs/evidence/c-d5/d5-final-verification.log`。
+- D5「应用自身可写目录读写」已通过，**按组长意见重做**。上一版把 `open()`/`saveAs()` 在 OHOS 下强制改为 Qt 非原生对话框，虽能进私有目录，但去掉了系统选择器入口。现改为两个入口并存：`Open...`/`Save as...` 仍走系统选择器（外部工程与共享位置），新增 `Open from App Storage...`/`Save as to App Storage...` 走 Qt 对话框（私有 `files` 目录）；`saveAs` 抽出 `saveAsTo(bool)` 共用实现。
+- 最终 HAP（SHA-256 `e18dea274b17489dc0331236aa8a1befe5751af9cc3c837c8169e68f9c49a756`，32,047,426 字节）在模拟器内验证：系统选择器打开共享目录外部工程 `rc-lowpass-d5.xsch`、另存到共享位置；私有目录另存**新副本** `rc-lowpass-d5.xsch`（14:20，3575 字节，SHA-256 `c1f46aeb…`），结束进程重启（PID 2885→7213）后经应用存储入口重新打开，内容完整。证据见 `docs/evidence/c-d5/d5-p1-*.jpeg`、`d5-p2-*.jpeg` 与 `d5-p2-file-check.log`。
+- 上一版的私有目录写入记录（11:30）早于其所测 HAP（11:46 生成、11:47 安装），已按组长 P2 意见弃用，不再作为结论依据。
