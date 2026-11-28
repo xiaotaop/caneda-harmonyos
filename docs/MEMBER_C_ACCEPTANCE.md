@@ -9,7 +9,8 @@
 | 项目 | 值 | 记录人 | 日期 |
 |---|---|---|---|
 | HAP（D4） | `com.caneda.desktop` 1.0.0，SHA-256 `1eb50c2796ac9685d44f31c72bc575d6102da0df4b088c35598078b0827f0b19`，32,039,938 字节，未签名调试包。**仅用于** A4、A6、A7、A8、B1–B7、D4 | 成员 C | 2026-11-27 |
-| HAP（D3） | `com.caneda.desktop` 1.0.0，SHA-256 `d5970a8bc0b13c662ca4ec8ad82460395b560838a4c6af0d4537bb4e3b353122`，32,028,826 字节，未签名调试包。**仅用于** A2、A5、C1、D2、D3、D5 | 成员 C | 2026-11-26 |
+| HAP（D3） | `com.caneda.desktop` 1.0.0，SHA-256 `d5970a8bc0b13c662ca4ec8ad82460395b560838a4c6af0d4537bb4e3b353122`，32,028,826 字节，未签名调试包。**仅用于** A2、A5、C1、D2、D3 | 成员 C | 2026-11-26 |
+| HAP（D5 final） | `com.caneda.desktop` 1.0.0，SHA-256 `026ec6d601c3bdc2f855a835f7f00550fab318fb9d4760888952ddda38a57a4d`，32,043,122 字节，未签名调试包。**仅用于** D5 | 成员 C | 2026-11-28 |
 | Qt for HarmonyOS | 5.15.16，源码标签 `4af606551a1ca1f91869284eb13650b2204d7161`，x86_64 交叉构建 | 成员 C | 2026-11-26 |
 | Qwt | 6.1.6，x86_64 交叉构建，源码 SHA-256 `99460d31c115ee4117b0175d885f47c2c590d784206f09815dc058fbe5ede1f6` | 成员 C | 2026-11-26 |
 | 模拟器镜像 / API / ABI | HarmonyOS 7.0.0.107，API 26，x86_64，2in1（MateBook Pro） | 成员 C | 2026-11-24 |
@@ -61,16 +62,16 @@
 | D2 | 安装后首次启动 | 首次启动应用 | 窗口正常，无崩溃 | **通过**（D3 包） | 主窗口、菜单栏、元件面板与画布正常；首版因缺 `libQt5OpenGL.so` 启动即崩，补齐后稳定。证据来自 **D3 包**（`d5970a8b`）；D4 包沿用同一 `libcaneda.so` 与库集合，但未单独留启动截图。[01-launch](evidence/c-d3/01-launch.jpeg) |
 | D3 | 文件选择回调 | 通过平台桥接选择样例文件 | 能拿到路径并打开 | **通过**（D3 包） | 两条路径均验证：系统选择器选中文件可打开；`io.qt.appArgsJson` 启动参数亦能把路径传入 `main()`。证据来自 **D3 包**；D4 包的等价行为见 D4 行的取消用例与 B1–B7 的包内打开。[07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg) |
 | D4 | 文件选择取消 | 在系统文件对话框中取消 | 应用收到取消状态，不崩溃 | **通过** | 系统打开对话框取消后返回原文档，标签页与画布内容保持，应用不崩溃。[取消后](evidence/c-d4/d4-cancel-open.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
-| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | 2026-11-28 两套样例桌面回归均 PASS（[记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md)），但尚未在应用自身可写目录完成实际读写；包内 `resfile` 读取与系统选择器保存不能替代，D5 保持待验 |
+| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | **通过** | 最新 HAP 的 Save As 默认进入 `/data/app/el2/100/base/com.caneda.desktop/files` 并写入 `rc-lowpass.xsch`（3575 字节，SHA-256 `c1f46aeb…`）；覆盖安装并重启后，File > Open 使用 Qt 对话框从该目录重新打开，随后 File > Close 并再次 Open 均正常。[最终记录](evidence/c-d5/d5-final-verification.log) · [打开对话框](evidence/c-d5/d5-final-open-dialog.jpeg) · [重开结果](evidence/c-d5/d5-final-reopen-after-close.jpeg) · [D5 记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md) |
 
-### D5 补充观察（不改变 D5 状态）
+### D5 辅助观察
 
 | 编号 | 观察项 | 结果 | 证据 |
 |---|---|---|---|
 | D5-O1 | 包内 `resfile` 读取 | 通过。元件库与 RC 样例均从 `/data/storage/el1/bundle/entry/resources/resfile/caneda/` 加载。 | [01-launch](evidence/c-d3/01-launch.jpeg) · [02-open-rc-sample](evidence/c-d3/02-open-rc-sample.jpeg) |
 | D5-O2 | 系统文件选择器保存 | 通过。通过系统选择器将当前文档另存为副本，保存后标题与标签页更新。 | [04-save-as-dialog](evidence/c-d3/04-save-as-dialog.jpeg) · [05-after-save](evidence/c-d3/05-after-save.jpeg) |
 
-D5 要求的是应用在自身可写目录完成读写；上述两项仅证明包内资源可读和系统选择器写入成功，不等同于 D5 通过。
+D5 的最终通过依据是上表中的应用私有 `files` 目录保存与重开闭环；上述两项保留为包内资源读取和系统选择器路径的辅助证据。
 
 ## 桌面基线（D1、D5）
 
@@ -116,7 +117,7 @@ D4 已完成 A4、A6、A7、A8、B1–B7 与 D4 的模拟器实测，结果和�
 - 保存中断后的文件完整性，以及保存目标目录的字节级/残留文件校验。
 - B7 的实际网表生成与未连接节点跳过；本包缺少仿真后端。
 - C2–C6（样例编辑、仿真、失败恢复）。
-- D1 的干净安装（需先卸载）与 D5 的应用自身可写目录读写。
+- D1 的干净安装（需先卸载）。
 - A8 重复空错误框和 B6 缺库无界面提示需修复后复测。
 
 ## 缺陷清单
@@ -137,7 +138,7 @@ D4 已完成 A4、A6、A7、A8、B1–B7 与 D4 的模拟器实测，结果和�
 - 保存中断后的文件完整性，以及保存后文件的字节级校验（保存目标经系统文件访问框架落盘，`/storage/media/100/local/files` 对 shell 不可读）。
 - B7 的实际网表生成与未连接节点跳过（本包缺少仿真后端）。
 - C2–C6 样例编辑、仿真与失败恢复。
-- D1 干净安装、D5 应用自身可写目录读写（D5 仍缺应用自身沙箱路径的实测证据）。
+- D1 干净安装（候选包阶段执行）。
 - A8 重复空错误框、B6 缺库无界面提示修复后复测。
 - 非 ASCII 标签的保存与重开（保存编码依赖系统 locale，见 D2 记录 R4）。
 - PC 窗口尺寸、键鼠行为与真机行为本期不覆盖，按计划记录。

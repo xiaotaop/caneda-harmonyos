@@ -1,0 +1,16 @@
+[  0%] Built target tools_autogen_timestamp_deps
+[  0%] Built target paintings_autogen_timestamp_deps
+[  0%] Built target dialogs_autogen_timestamp_deps
+[  1%] Built target tools_autogen
+[  2%] Built target paintings_autogen
+[  3%] Built target dialogs_autogen
+[ 12%] Built target tools
+[ 26%] Built target paintings
+[ 57%] Built target dialogs
+[ 57%] Built target caneda_autogen_timestamp_deps
+[ 58%] Automatic MOC and UIC for target caneda
+[ 58%] Built target caneda_autogen
+[ 60%] Building CXX object CMakeFiles/caneda.dir/D_/dsh_project/caneda-harmonyos/src/mainwindow.cpp.o
+clang++: warning: argument unused during compilation: '--gcc-toolchain=D:/DevEco Studio/sdk/default/openharmony/native/llvm' [-Wunused-command-line-argument]
+[ 61%] Linking CXX shared library libcaneda.so
+[100%] Built target caneda

@@ -40,6 +40,8 @@
 #include "statehandler.h"
 #include "tabs.h"
 
+#include <QFileInfo>
+#include <QStandardPaths>
 #include <QtWidgets>
 
 namespace Caneda
@@ -217,8 +219,21 @@ namespace Caneda
         DocumentViewManager *manager = DocumentViewManager::instance();
 
         if(fileName.isEmpty()) {
+#ifdef Q_OS_OHOS
+            // The native picker does not expose the application's private
+            // files directory, where Save As stores documents on OHOS.
+            QFileDialog dialog(this, tr("Open File"));
+            dialog.setOption(QFileDialog::DontUseNativeDialog);
+            dialog.setFileMode(QFileDialog::ExistingFile);
+            dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+            dialog.setNameFilters(manager->fileNameFilters());
+            if (dialog.exec()) {
+                fileName = dialog.selectedFiles().value(0);
+            }
+#else
             fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
                                                     manager->fileNameFilters().join(QString(";;")));
+#endif
         }
 
         if(!fileName.isEmpty()) {
@@ -318,6 +333,15 @@ namespace Caneda
         dialog.setAcceptMode(QFileDialog::AcceptSave);
         dialog.setNameFilters(manager->currentDocument()->context()->fileNameFilters());
         dialog.setDefaultSuffix(manager->currentDocument()->context()->defaultSuffix());
+
+#ifdef Q_OS_OHOS
+        // The native HarmonyOS document picker saves only to media locations.
+        // Use Qt's dialog so Save As can target the application's private
+        // files directory, which is exposed as HOME by the OHOS Qt platform.
+        dialog.setOption(QFileDialog::DontUseNativeDialog);
+        dialog.setDirectory(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        dialog.selectFile(QFileInfo(document->fileName()).fileName());
+#endif
 
         QString fileName;
         if (dialog.exec()) {

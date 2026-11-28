@@ -42,4 +42,4 @@ python tests/files/verify_samples.py --ngspice D:\msys64\ucrt64\bin\ngspice.exe
 
 命令退出码为 0。两套样例的 `.xsch` 与 `expected.json` 均无需因本次回归修改；完整输出见 [verify-samples.log](../../../docs/evidence/c-d5/verify-samples.log)，文件哈希见 [samples-sha256.txt](../../../docs/evidence/c-d5/samples-sha256.txt)，D5 记录见 [MEMBER_C_D5_SAMPLES_ACCEPTANCE.md](../../../docs/MEMBER_C_D5_SAMPLES_ACCEPTANCE.md)。
 
-该结果证明样例仍可生成正确网表并仿真，不替代 HAP 内 UI 验收；应用自身可写目录读写（D5）仍待验。
+该结果证明样例仍可生成正确网表并仿真。另在最新 HAP（SHA-256 `026ec6d6…`）中完成应用私有目录 `files/rc-lowpass.xsch` 的 Save As、覆盖安装重启后 Open、File > Close 后再次 Open，D5 应用内读写闭环已通过，见 [d5-final-verification.log](../../../docs/evidence/c-d5/d5-final-verification.log)。

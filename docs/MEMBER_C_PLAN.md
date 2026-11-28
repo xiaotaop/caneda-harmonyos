@@ -86,4 +86,5 @@ D5 计划项「更新样例和验收表」已形成当日可提交交付。完�
 - 两套样例在 Windows 桌面用 Python 3.13.11 + ngspice-47 重新回归，均 `PASS`：RC 低通 719 点、最大偏差 0.000398 V；二极管整流 6008 点、最大偏差 0.093940 V；命令退出码 0。
 - 忽略行尾差异后，两套 `.xsch` 与 `expected.json` 无实际内容改动，既有预期值继续有效。证据归档到 `docs/evidence/c-d5/verify-samples.log` 与 `docs/evidence/c-d5/samples-sha256.txt`。
 - B4 版本过高补测通过：修正 `aa start` 的 JSON 引号传递后，日志能把 `io.qt.appArgsJson` 与 `future-version.xsch` 唯一关联，界面显示拒绝提示且进程保持存活。B4 在验收表改判为通过。
-- D5「应用自身可写目录读写」仍待验。桌面样例回归、包内 `resfile` 读取和系统选择器保存均不能替代该路径，需后续在应用沙箱可写目录完成写入、关闭与重开。
+- D5「应用自身可写目录读写」已通过。`MainWindow::open()` / `saveAs()` 在 OHOS 下改用 Qt 非原生文件对话框，默认 `QStandardPaths::HomeLocation`，设备侧为 `/data/app/el2/100/base/com.caneda.desktop/files`。
+- 最新 HAP（SHA-256 `026ec6d601c3bdc2f855a835f7f00550fab318fb9d4760888952ddda38a57a4d`，32,043,122 字节）覆盖安装后，Save As 成功写入 `rc-lowpass.xsch`（3575 字节），应用内 Open 可看到并打开该文件；File > Close 后再次 Open 仍正常。证据见 `docs/evidence/c-d5/d5-final-verification.log`。

@@ -1,0 +1,13 @@
+--- ls ---
+total 8192
+-rw-rw-rw- 1 20020050 20020050 3575 2026-11-28 11:30 rc-lowpass.xsch
+--- stat ---
+  File: /data/app/el2/100/base/com.caneda.desktop/files/rc-lowpass.xsch
+  Size: 3575	 Blocks: 16	 IO Blocks: 512	 regular file
+Device: fe30h/65072d	 Inode: 823662	 Links: 1	 Device type: 0,0
+Access: (0666/-rw-rw-rw-)	Uid: (20020050/20020050)	Gid: (20020050/20020050)
+Access: 2026-11-28 11:30:47.368817316 +0800
+Modify: 2026-11-28 11:30:47.368817316 +0800
+Change: 2026-11-28 11:30:47.368817316 +0800
+--- sha256sum ---
+c1f46aebd0f8168d2f87a1f44e309d0b994973654ec3ae7a93f35a8d52afeaaf  /data/app/el2/100/base/com.caneda.desktop/files/rc-lowpass.xsch
