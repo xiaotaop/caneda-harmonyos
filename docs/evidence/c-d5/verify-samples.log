@@ -1,0 +1,21 @@
+D5 sample regression - 2026-11-28 10:11:23 +08:00
+Python: Python 3.13.11
+ngspice: D:\msys64\ucrt64\bin\ngspice.exe
+Command: python tests/files/verify_samples.py --ngspice D:\msys64\ucrt64\bin\ngspice.exe
+
+[rc-lowpass]
+        0.500 ms  v(out)   expected 0.000000  measured 0.000000  delta 0.000000  ok
+        2.003 ms  v(out)   expected 3.165195  measured 3.164797  delta 0.000398  ok
+        4.003 ms  v(out)   expected 4.751686  measured 4.751636  delta 0.000050  ok
+        6.003 ms  v(out)   expected 4.966394  measured 4.966388  delta 0.000006  ok
+        7.000 ms  v(out)   expected 4.987600  measured 4.987601  delta 0.000001  ok
+    719 points, 3 variables
+  PASS
+[diode-rectifier]
+       30.000 ms  v(out)   expected 9.064500  measured 9.158440  delta 0.093940  ok
+       40.000 ms  v(out)   expected 8.888400  measured 8.965638  delta 0.077238  ok
+       50.000 ms  v(out)   expected 9.064500  measured 9.158440  delta 0.093940  ok
+    6008 points, 3 variables
+  PASS
+
+Exit code: 0

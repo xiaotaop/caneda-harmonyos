@@ -74,7 +74,18 @@ D4 计划项「验证工程读写接口及取消、损坏文件用例」已在�
 
 - A7 部分通过：取消系统保存对话框后标题、标签页与画布内容不变；但「无残留文件」判据未核验（系统媒体目录对 shell 不可读），保留待验。
 - A8 部分通过：仅覆盖**打开失败**分支（`QFile::open` 失败），首次提示可读，但关闭后出现标题为文件路径、正文为空的重复错误框。根因是 `FormatXmlSchematic::save()` 失败时未回填 `errorMessage`，外层 `MainWindow::save()` 仍再次弹框；登记为 C-D4-01。打开成功后的写入/关闭失败分支仍未验。
-- B4 待验：`b4-future-version.jpeg` 与 B3 截图为同一文件（Git blob `3a128d43`），通用错误文案与日志都无法把拒绝结果关联到 `future-version.xsch`，缺独立证据；重复截图已从证据目录移除，需重跑后改判。
+- B4 在 D4 时待验：`b4-future-version.jpeg` 与 B3 截图为同一文件（Git blob `3a128d43`），通用错误文案与日志都无法把拒绝结果关联到 `future-version.xsch`，缺独立证据；重复截图已从证据目录移除。D5 已补测通过，见下方 D5 进展。
 - B6 部分通过：缺失库元件被跳过且工程仍可打开，但界面无提示，只有 `qWarning()` 日志；未达到“有明确提示”，登记为 C-D4-02。
 - B7 部分通过：工程打开且悬空线段可见，但仿真在网表生成前被 `Missing simulator backend...` 拦截。网表跳过未连接节点仅完成源码推导（拓扑只遍历元件端口），不得记为实测通过。
-- 仍未覆盖：A1、A3、用户自定义文件名、A7 残留文件、A8 写入/关闭失败、B4、实际网表生成、C2–C6、D1 干净安装与 D5 应用自身可写目录读写。
+- D4 结束时仍未覆盖：A1、A3、用户自定义文件名、A7 残留文件、A8 写入/关闭失败、B4、实际网表生成、C2–C6、D1 干净安装与 D5 应用自身可写目录读写。
+
+## D5 进展（2026-11-28）
+
+D5 计划项「更新样例和验收表」已形成当日可提交交付。完整记录见 `docs/MEMBER_C_D5_SAMPLES_ACCEPTANCE.md`。
+
+- 两套样例在 Windows 桌面用 Python 3.13.11 + ngspice-47 重新回归，均 `PASS`：RC 低通 719 点、最大偏差 0.000398 V；二极管整流 6008 点、最大偏差 0.093940 V；命令退出码 0。
+- 忽略行尾差异后，两套 `.xsch` 与 `expected.json` 无实际内容改动，既有预期值继续有效。证据归档到 `docs/evidence/c-d5/verify-samples.log` 与 `docs/evidence/c-d5/samples-sha256.txt`。
+- B4 版本过高补测通过：修正 `aa start` 的 JSON 引号传递后，日志能把 `io.qt.appArgsJson` 与 `future-version.xsch` 唯一关联，界面显示拒绝提示且进程保持存活。B4 在验收表改判为通过。
+- D5「应用自身可写目录读写」已通过，**按组长意见重做**。上一版把 `open()`/`saveAs()` 在 OHOS 下强制改为 Qt 非原生对话框，虽能进私有目录，但去掉了系统选择器入口。现改为两个入口并存：`Open...`/`Save as...` 仍走系统选择器（外部工程与共享位置），新增 `Open from App Storage...`/`Save as to App Storage...` 走 Qt 对话框（私有 `files` 目录）；`saveAs` 抽出 `saveAsTo(bool)` 共用实现。
+- 最终 HAP（SHA-256 `e18dea274b17489dc0331236aa8a1befe5751af9cc3c837c8169e68f9c49a756`，32,047,426 字节）在模拟器内验证：系统选择器打开共享目录外部工程 `rc-lowpass-d5.xsch`、另存到共享位置；私有目录另存**新副本** `rc-lowpass-d5.xsch`（14:20，3575 字节，SHA-256 `c1f46aeb…`），结束进程重启（PID 2885→7213）后经应用存储入口重新打开，内容完整。证据见 `docs/evidence/c-d5/d5-p1-*.jpeg`、`d5-p2-*.jpeg` 与 `d5-p2-file-check.log`。
+- 上一版的私有目录写入记录（11:30）早于其所测 HAP（11:46 生成、11:47 安装），已按组长 P2 意见弃用，不再作为结论依据。

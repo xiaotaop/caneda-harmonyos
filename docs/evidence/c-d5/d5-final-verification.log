@@ -1,0 +1,44 @@
+D5 应用沙箱读写最终验证
+========================================
+验证时间：2026-11-28 12:06 +08:00
+设备：HarmonyOS 7.0.0.107 / API 26 / x86_64 / 2in1 MateBook Pro
+hdc 目标：127.0.0.1:5555
+
+被测 HAP
+----------------------------------------
+路径：D:\dsh_project\qt-harmonyos\caneda-deveco\entry\build\default\outputs\default\entry-default-unsigned.hap
+SHA-256：026EC6D601C3BDC2F855A835F7F00550FAB318FB9D4760888952DDDA38A57A4D
+大小：32,043,122 字节
+修改时间：2026-11-28 11:46:07
+包名：com.caneda.desktop
+版本：1.0.0 (1000000)
+安装方式：hdc install -r
+安装结果：install bundle successfully
+设备侧 updateTime：1795837646620
+
+应用私有目录文件
+----------------------------------------
+路径：/data/app/el2/100/base/com.caneda.desktop/files/rc-lowpass.xsch
+大小：3575 字节
+SHA-256：c1f46aebd0f8168d2f87a1f44e309d0b994973654ec3ae7a93f35a8d52afeaaf
+文件所有者：20020050:20020050
+
+验证步骤与结果
+----------------------------------------
+1. 覆盖安装最新 HAP 后无参数启动应用，主窗口正常显示。
+2. File > Open 打开 Qt 非原生 Open File 对话框，Look in 为应用私有 files 目录，文件列表显示 rc-lowpass.xsch。
+3. 选择 rc-lowpass.xsch 并点击 Open，标题栏和标签页变为 rc-lowpass.xsch，RC 元件、连线、属性与仿真指令正常显示。
+4. File > Close 后文档关闭，仅保留 Untitled。
+5. 再次 File > Open，重新选择私有目录中的 rc-lowpass.xsch 并打开，文档与图形正常显示。
+6. 应用进程保持存活：PID 24164，进程名 com.caneda.desktop。
+
+结论：D5 应用自身可写目录保存、关闭与重新打开闭环通过。
+
+证据截图
+----------------------------------------
+d5-qt-saveas2.jpeg                  Save As 默认应用私有 files 目录并预填文件名
+d5-saved.jpeg                        保存成功后的应用界面
+d5-final-open-dialog.jpeg           最新 HAP 的 Qt Open File 对话框及私有目录文件
+d5-final-reopen.jpeg                 覆盖安装并重启后的首次打开结果
+d5-final-closed.jpeg                 File > Close 后的界面
+d5-final-reopen-after-close.jpeg     File > Close 后再次打开的结果

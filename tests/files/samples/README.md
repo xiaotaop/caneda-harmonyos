@@ -26,3 +26,20 @@ python3 tests/files/verify_samples.py --ngspice ngspice
 - 样例坐标落在网格上（引脚以 20 为单位），便于在模拟器里手动编辑。
 - 仿真走 `.tran` 指令；`Transient Simulation` 元件的 `tstep`/`tstop` 已在样例中设好。
 - 网表节点名为 `in`、`out` 和 `0`（`ground` 端口映射为 SPICE 地）。
+
+## D5 回归记录（2026-11-28）
+
+在 Windows 桌面环境使用 Python 3.13.11 与 ngspice-47 重新执行：
+
+```powershell
+python tests/files/verify_samples.py --ngspice D:\msys64\ucrt64\bin\ngspice.exe
+```
+
+| 样例 | 结果 | 检查点数 | 最大数值偏差 | 容差 |
+|---|---|---:|---:|---:|
+| RC 低通 | PASS | 719 | 0.000398 V | 0.01 V |
+| 二极管整流 | PASS | 6008 | 0.093940 V | 0.3 V |
+
+命令退出码为 0。两套样例的 `.xsch` 与 `expected.json` 均无需因本次回归修改；完整输出见 [verify-samples.log](../../../docs/evidence/c-d5/verify-samples.log)，文件哈希见 [samples-sha256.txt](../../../docs/evidence/c-d5/samples-sha256.txt)，D5 记录见 [MEMBER_C_D5_SAMPLES_ACCEPTANCE.md](../../../docs/MEMBER_C_D5_SAMPLES_ACCEPTANCE.md)。
+
+该结果证明样例仍可生成正确网表并仿真。另在最新 HAP（SHA-256 `026ec6d6…`）中完成应用私有目录 `files/rc-lowpass.xsch` 的 Save As、覆盖安装重启后 Open、File > Close 后再次 Open，D5 应用内读写闭环已通过，见 [d5-final-verification.log](../../../docs/evidence/c-d5/d5-final-verification.log)。

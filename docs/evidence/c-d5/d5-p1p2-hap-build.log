@@ -1,0 +1,74 @@
+> hvigor [33mWARN: The project has not explicitly set the 'targetSdkVersion' version at build-profile.json5. It is recommended to configure it. Reference: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-hvigor-build-profile-app#section45865492619[39m
+> hvigor [32mUP-TO-DATE :entry:default@PreBuild...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@PreBuild...  [39m
+> hvigor [32mFinished :entry:default@CreateModuleInfo... after 3 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateMetadata...  [39m
+> hvigor [32mFinished :entry:default@ConfigureCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CreateBuildProfile...  [39m
+> hvigor [32mFinished :entry:default@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mFinished :entry:default@GeneratePkgContextInfo... after 11 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgSdkInfo...  [39m
+> hvigor [32mFinished :entry:default@ProcessIntegratedHsp... after 2 ms [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@CreateModuleInfo... after 2 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@GenerateMetadata...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@ConfigureCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@MergeProfile...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@CreateBuildProfile...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@PreCheckSyscap... after 1 ms [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@GeneratePkgContextInfo... after 4 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@GeneratePkgSdkInfo...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@ProcessIntegratedHsp... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@MakePackInfo...  [39m
+> hvigor [32mFinished :entry:default@SyscapTransform... after 18 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessShareConfig...  [39m
+> hvigor [32mFinished :entry:default@ProcessStartupConfig... after 2 ms [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@BuildNativeWithCmake... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@MakePackInfo...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@SyscapTransform... after 5 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@ProcessProfile...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@ProcessRouterMap...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@ProcessShareConfig...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@ProcessStartupConfig... after 1 ms [39m
+> hvigor [32mFinished :entry:default@BuildNativeWithNinja... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@GenerateLoaderJson...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@BuildNativeWithNinja... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@ProcessResource...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@GenerateLoaderJson...  [39m
+> hvigor [32mFinished :entry:default@ProcessLibs... after 113 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@CompileResource...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@ProcessLibs...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@CompileResource...  [39m
+> hvigor [32mUP-TO-DATE :entry:default@CompileArkTS...  [39m
+> hvigor [32mFinished :entry:default@BuildJS... after 4 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@DoNativeStrip...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@CompileArkTS...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@BuildJS... after 4 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@CacheNativeLibs...  [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@GeneratePkgModuleJson...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mUP-TO-DATE :qEmbeddedUiExtensionHost:default@PackageHap...  [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@PackingCheck... after 6 ms [39m
+> hvigor [33mWARN: Will skip sign 'hos_hap'. No signingConfigs profile is configured in current project.
+             If needed, configure the signingConfigs in D:\dsh_project\qt-harmonyos\caneda-deveco\build-profile.json5.[39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@SignHap... after 3 ms [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:default@CollectDebugSymbol... after 3 ms [39m
+> hvigor [32mFinished :qEmbeddedUiExtensionHost:assembleHap... after 1 ms [39m
+> hvigor [32mFinished :entry:default@DoNativeStrip... after 268 ms [39m
+> hvigor [32mFinished :entry:default@CacheNativeLibs... after 11 ms [39m
+> hvigor [32mUP-TO-DATE :entry:default@GeneratePkgModuleJson...  [39m
+> hvigor [32mFinished :entry:default@ProcessCompiledResources... after 1 ms [39m
+> hvigor [32mFinished :entry:default@PackageHap... after 972 ms [39m
+> hvigor [32mFinished :entry:default@PackingCheck... after 23 ms [39m
+> hvigor [33mWARN: Will skip sign 'hos_hap'. No signingConfigs profile is configured in current project.
+             If needed, configure the signingConfigs in D:\dsh_project\qt-harmonyos\caneda-deveco\build-profile.json5.[39m
+> hvigor [32mFinished :entry:default@SignHap... after 2 ms [39m
+> hvigor [32mFinished :entry:default@CollectDebugSymbol... after 3 ms [39m
+> hvigor [32mFinished :entry:assembleHap... after 1 ms [39m
+> hvigor [32mBUILD SUCCESSFUL in 7 s 398 ms [39m
+
+66 tasks in total: 34 executed, 32 up-to-date

@@ -1,0 +1,4 @@
+240e0acbf500b01a207f50d85387f7b2d9496743d278d7e14dc1dcfc5f9ef183  tests/files/samples/rc-lowpass/rc-lowpass.xsch
+43d8b1fa5f2210d07ed1d53ddf61dfe2da8ec7e8cf9f7a166f39abee80334b5b  tests/files/samples/diode-rectifier/diode-rectifier.xsch
+4cfa9373b5e3fbd8fc3c2f08b1a9e0e9a2a909eda704a2fd1b5dd733d52294b9  tests/files/samples/expected.json
+abea65dd6acfee4a7331e8276559193afa19148a4a3847ec88e9dcb200034ac5  tests/files/verify_samples.py

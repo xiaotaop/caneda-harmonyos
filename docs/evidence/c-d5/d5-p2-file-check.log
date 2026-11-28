@@ -1,0 +1,23 @@
+# D5 P1/P2 re-verification (2026-11-28)
+# HAP: e18dea274b17489dc0331236aa8a1befe5751af9cc3c837c8169e68f9c49a756 (32,047,426 bytes)
+# libcaneda.so: 67d893432423b5af24ea7293c1352dc38d3fa4335d3e87855c288d9bca89ebcb
+
+## private dir before save
+$ hdc shell ls -l /data/app/el2/100/base/com.caneda.desktop/files
+total 16384
+-rw-rw-rw- 1 20020050 20020050 3575 2026-11-28 11:30 rc-lowpass.xsch
+
+## after Save as to App Storage (final HAP)
+$ hdc shell ls -l /data/app/el2/100/base/com.caneda.desktop/files
+total 16384
+-rw-rw-rw- 1 20020050 20020050 3575 2026-11-28 14:20 rc-lowpass-d5.xsch
+-rw-rw-rw- 1 20020050 20020050 3575 2026-11-28 11:30 rc-lowpass.xsch
+
+## pulled copy
+$ hdc file recv .../files/rc-lowpass-d5.xsch
+FileTransfer finish, Size:3575, File count = 1
+$ sha256sum rc-lowpass-d5.xsch
+c1f46aebd0f8168d2f87a1f44e309d0b994973654ec3ae7a93f35a8d52afeaaf  rc-lowpass-d5-saved.xsch
+
+## process restart
+before: pid 2885   after: pid 7213

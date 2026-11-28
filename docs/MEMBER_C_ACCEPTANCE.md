@@ -9,7 +9,8 @@
 | 项目 | 值 | 记录人 | 日期 |
 |---|---|---|---|
 | HAP（D4） | `com.caneda.desktop` 1.0.0，SHA-256 `1eb50c2796ac9685d44f31c72bc575d6102da0df4b088c35598078b0827f0b19`，32,039,938 字节，未签名调试包。**仅用于** A4、A6、A7、A8、B1–B7、D4 | 成员 C | 2026-11-27 |
-| HAP（D3） | `com.caneda.desktop` 1.0.0，SHA-256 `d5970a8bc0b13c662ca4ec8ad82460395b560838a4c6af0d4537bb4e3b353122`，32,028,826 字节，未签名调试包。**仅用于** A2、A5、C1、D2、D3、D5 | 成员 C | 2026-11-26 |
+| HAP（D3） | `com.caneda.desktop` 1.0.0，SHA-256 `d5970a8bc0b13c662ca4ec8ad82460395b560838a4c6af0d4537bb4e3b353122`，32,028,826 字节，未签名调试包。**仅用于** A2、A5、C1、D2、D3 | 成员 C | 2026-11-26 |
+| HAP（D5 final） | `com.caneda.desktop` 1.0.0，SHA-256 `e18dea274b17489dc0331236aa8a1befe5751af9cc3c837c8169e68f9c49a756`，32,047,426 字节，未签名调试包。保留系统选择器入口并新增应用存储入口后的重建包，**用于** A5（另存）、D3（文件选择回调）、D5 | 成员 C | 2026-11-28 |
 | Qt for HarmonyOS | 5.15.16，源码标签 `4af606551a1ca1f91869284eb13650b2204d7161`，x86_64 交叉构建 | 成员 C | 2026-11-26 |
 | Qwt | 6.1.6，x86_64 交叉构建，源码 SHA-256 `99460d31c115ee4117b0175d885f47c2c590d784206f09815dc058fbe5ede1f6` | 成员 C | 2026-11-26 |
 | 模拟器镜像 / API / ABI | HarmonyOS 7.0.0.107，API 26，x86_64，2in1（MateBook Pro） | 成员 C | 2026-11-24 |
@@ -25,7 +26,7 @@
 | A2 | 保存后重开 | 关闭文档，重新打开 A5 另存的 RC 样例副本 | 元件、连线、属性值与保存前一致 | **通过**（D3 包） | 应用内实测（A5 另存副本）：标题栏、元件 R1=1k、C1=1u、脉冲源四参数与 Sim1 两条指令保存前后逐项一致。证据来自 **D3 包**（`d5970a8b`），D4 未复测本项。[08-reopened](evidence/c-d3/08-reopened.jpeg) |
 | A3 | 覆盖保存 | 修改属性后再次保存，再重开 | 新值生效，旧值不残留 | 待验 | 本次未执行修改属性后覆盖保存；D3 只完成 A5 另存，不能作为 A3 证据，D4 补 |
 | A4 | 退出重启后打开 | 保存后退出应用，重启再打开 | 文件仍可打开，内容一致 | **通过** | 结束应用进程后重启（PID 7621→12031），从系统文件选择器重开已保存文件；RC 元件、连线、属性值与仿真指令完整。文件名因 D3 使用默认后缀而为 `.xsch`，不影响本用例。[重启后](evidence/c-d4/a4-restarted.jpeg) · [打开选择器](evidence/c-d4/a4-open-picker2.jpeg) · [重开结果](evidence/c-d4/a4-reopened-after-restart.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
-| A5 | 另存为 | 另存到不同路径，打开新文件 | 新文件可独立打开 | **通过**（D3 包） | 另存后新文件出现在系统选择器并可独立打开，内容完整。证据来自 **D3 包**（`d5970a8b`），D4 未复测本项。[04-save-as-dialog](evidence/c-d3/04-save-as-dialog.jpeg) · [07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg) |
+| A5 | 另存为 | 另存到不同路径，打开新文件 | 新文件可独立打开 | **通过**（D3 包 + D5 最终包） | D3 包：另存后新文件出现在系统选择器并可独立打开（[04-save-as-dialog](evidence/c-d3/04-save-as-dialog.jpeg) · [07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg)）。D5 最终包 `e18dea27…`：`File > Save as...` 走系统保存对话框写入共享位置，`File > Save as to App Storage...` 写入应用私有目录并可重开。[共享位置另存](evidence/c-d5/d5-p1-saveas-shared-done.jpeg) · [D5 记录 §4](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md) |
 | A6 | 只读/无权限路径 | 保存到不可写路径 | 有明确失败提示，应用不崩溃 | **通过** | 对包内只读路径执行保存，弹出 `Cannot save document!`，关闭后进程仍存活。错误提示闭环的重复空框问题在 A8 单独记录。[只读保存失败](evidence/c-d4/a6-save-readonly.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
 | A7 | 保存取消 | 在文件对话框中取消 | 文档保持未修改状态，无残留文件 | 部分通过 | 已验证：取消系统保存对话框后，标题、标签页和画布内容均不变，应用不崩溃。未验证：保存目标目录是否残留临时/空文件——媒体目录对 shell 不可读，未做目录级核验，该项保留待验。[保存对话框](evidence/c-d4/a7-save-as-dialog2.jpeg) · [取消后](evidence/c-d4/a7-after-save-cancel.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
 | A8 | 保存失败提示 | 构造写入失败（如磁盘满或路径失效） | 提示可读，可继续编辑 | 部分通过 | **已验证的是打开失败路径**：对包内只读目标执行保存时 `QFile::open` 失败，首个 `Cannot save document!` 可读；关闭后又出现标题为文件路径、正文为空的重复错误框，关闭后应用仍可操作（缺陷 C-D4-01）。**未验证写入/关闭失败路径**（打开成功后 `stream << text` 或 `file.close()` 失败）：需构造磁盘满或目标被替换，仍待验，判据为错误提示可读、撤销栈不清空且文档仍标为已修改、原文件不被截断（承接 D2-8）。[空错误框](evidence/c-d4/a8-save-error-detail.jpeg) · [错误后仍可操作](evidence/c-d4/a8-after-error-still-responsive.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
@@ -37,7 +38,7 @@
 | B1 | 空文件 | 打开 0 字节 `.xsch` | 报错并安全返回，不崩溃 | **通过** | 显示 `Premature end of document.`，关闭后应用继续可用。[空文件错误](evidence/c-d4/b1-empty-pkg.jpeg) |
 | B2 | 截断 XML | 打开写到一半的 `.xsch` | 报错并安全返回 | **通过** | 显示 `Premature end of document.`，应用未崩溃。[截断 XML 错误](evidence/c-d4/b2-truncated.jpeg) |
 | B3 | 非法根元素 | 根元素不是 `caneda` | 提示"不是 Caneda 文件" | **通过** | 显示 `Not a caneda file or probably malformatted file`。[非法根元素错误](evidence/c-d4/b3-wrong-root.jpeg) |
-| B4 | 版本过高 | `version` 高于 0.4.0 | 拒绝打开并提示 | 待验 | 本轮无独立证据：`b4-future-version.jpeg` 与 B3 的 `b3-wrong-root.jpeg` 为同一文件（Git blob 均为 `3a128d43`），通用错误文案无法区分正在打开的文件，持久化日志中也没有 `future-version` 记录。需补能把 `future-version.xsch` 与拒绝结果关联的日志或截图后才可判通过 |
+| B4 | 版本过高 | `version` 高于 0.4.0 | 拒绝打开并提示 | **通过** | 2026-11-28 补测：`io.qt.appArgsJson` 日志明确指向 `future-version.xsch`，界面显示 `Xml parse error / Not a caneda file or probably malformatted file`，进程 PID 6859 保持存活。[截图](evidence/c-d5/b4-future-version-d5.jpeg) · [日志](evidence/c-d5/b4-future-version-d5-hilog.log) · [D5 记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md) |
 | B5 | 未知元件 | 引用库中不存在的元件名 | 跳过该元件并告警，其余正常 | **通过** | 跳过 `NoSuchPart`，其余 `V1/R1/C1/Sim1` 正常显示；持久化日志记录 `Warning: Found unknown element "NoSuchPart" , skipping...`。[工程仍打开](evidence/c-d4/b5-unknown-component.jpeg) · [持久化日志](evidence/c-d4/b5-b6-b7-persist-hilog.log) |
 | B6 | 缺库符号 | 库路径不可达 | 有明确提示，不崩溃 | **部分通过** | 缺失 `MissingLib` 中的 `Voltage Source Pulse` 被跳过，其余元件正常显示且不崩溃；但界面无提示，仅日志告警。已登记 C-D4-02。[工程仍打开](evidence/c-d4/b6-missing-library.jpeg) · [持久化日志](evidence/c-d4/b5-b6-b7-persist-hilog.log) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
 | B7 | 悬空连线 | 打开含未连接引脚的工程 | 正常打开，网表跳过未连接节点 | **部分通过** | 工程打开且悬空线段可见。仿真在网表生成前被 `Missing simulator backend...` 拦截，网表跳过未连接节点未实测；源码推导见 D4 记录 §5。[工程打开](evidence/c-d4/b7-dangling-wire.jpeg) · [仿真尝试](evidence/c-d4/b7-simulate-attempt.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
@@ -59,22 +60,22 @@
 |---|---|---|---|---|---|
 | D1 | 干净安装 | 卸载后重新安装候选包 | 安装成功，可启动 | 部分通过 | 覆盖安装成功并可启动；未先卸载，干净安装待 D15 候选包阶段执行 |
 | D2 | 安装后首次启动 | 首次启动应用 | 窗口正常，无崩溃 | **通过**（D3 包） | 主窗口、菜单栏、元件面板与画布正常；首版因缺 `libQt5OpenGL.so` 启动即崩，补齐后稳定。证据来自 **D3 包**（`d5970a8b`）；D4 包沿用同一 `libcaneda.so` 与库集合，但未单独留启动截图。[01-launch](evidence/c-d3/01-launch.jpeg) |
-| D3 | 文件选择回调 | 通过平台桥接选择样例文件 | 能拿到路径并打开 | **通过**（D3 包） | 两条路径均验证：系统选择器选中文件可打开；`io.qt.appArgsJson` 启动参数亦能把路径传入 `main()`。证据来自 **D3 包**；D4 包的等价行为见 D4 行的取消用例与 B1–B7 的包内打开。[07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg) |
+| D3 | 文件选择回调 | 通过平台桥接选择样例文件 | 能拿到路径并打开 | **通过**（D3 包 + D5 最终包） | D3 包：系统选择器选中文件可打开，`io.qt.appArgsJson` 启动参数亦能把路径传入 `main()`（[07-open-dialog-saved-file](evidence/c-d3/07-open-dialog-saved-file.jpeg)）。D5 最终包 `e18dea27…`：`File > Open...` 仍走系统选择器，成功打开共享目录中的外部工程 `rc-lowpass-d5.xsch`（[系统选择器](evidence/c-d5/d5-p1-open-system-picker.jpeg) · [打开结果](evidence/c-d5/d5-p1-external-opened.jpeg)） |
 | D4 | 文件选择取消 | 在系统文件对话框中取消 | 应用收到取消状态，不崩溃 | **通过** | 系统打开对话框取消后返回原文档，标签页与画布内容保持，应用不崩溃。[取消后](evidence/c-d4/d4-cancel-open.jpeg) · [D4 记录](MEMBER_C_D4_WRITE_CANCEL_CORRUPT.md) |
-| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | 待验 | 见下方 D5 补充观察：包内 `resfile` 读取与系统选择器保存已有证据，但尚未在应用自身可写目录完成实际读写校验，D5 保持待验 |
+| D5 | 沙箱路径 | 在应用可写目录读写样例 | 读写均成功 | **通过** | 最终 HAP `e18dea27…` 用 `File > Save as to App Storage...` 在私有目录 `/data/app/el2/100/base/com.caneda.desktop/files` 写出**新副本** `rc-lowpass-d5.xsch`（修改时间 2026-11-28 14:20，3575 字节，SHA-256 `c1f46aebd0f8168d2f87a1f44e309d0b994973654ec3ae7a93f35a8d52afeaaf`）；结束进程并重启（PID 2885→7213）后，用 `File > Open from App Storage...` 打开该副本，内容完整。同一 HAP 上系统选择器入口仍可用（见 A5 与 D5 记录 §4.2）。[文件检查](evidence/c-d5/d5-p2-file-check.log) · [保存对话框](evidence/c-d5/d5-p2-appstorage-saveas-dialog.jpeg) · [重开结果](evidence/c-d5/d5-p2-reopen-private.jpeg) · [D5 记录](MEMBER_C_D5_SAMPLES_ACCEPTANCE.md) |
 
-### D5 补充观察（不改变 D5 状态）
+### D5 辅助观察
 
 | 编号 | 观察项 | 结果 | 证据 |
 |---|---|---|---|
 | D5-O1 | 包内 `resfile` 读取 | 通过。元件库与 RC 样例均从 `/data/storage/el1/bundle/entry/resources/resfile/caneda/` 加载。 | [01-launch](evidence/c-d3/01-launch.jpeg) · [02-open-rc-sample](evidence/c-d3/02-open-rc-sample.jpeg) |
 | D5-O2 | 系统文件选择器保存 | 通过。通过系统选择器将当前文档另存为副本，保存后标题与标签页更新。 | [04-save-as-dialog](evidence/c-d3/04-save-as-dialog.jpeg) · [05-after-save](evidence/c-d3/05-after-save.jpeg) |
 
-D5 要求的是应用在自身可写目录完成读写；上述两项仅证明包内资源可读和系统选择器写入成功，不等同于 D5 通过。
+D5 的最终通过依据是上表中的应用私有 `files` 目录保存与重开闭环；上述两项保留为包内资源读取和系统选择器路径的辅助证据。
 
-## 桌面基线（D1 已完成）
+## 桌面基线（D1、D5）
 
-无 GUI 环境下的样例回归，用于确认样例本身仍有效：
+无 GUI 环境下的样例回归，用于确认样例本身仍有效。D5 于 2026-11-28 重新执行并归档结果：
 
 | 项目 | 结果 | 证据 |
 |---|---|---|
@@ -116,7 +117,7 @@ D4 已完成 A4、A6、A7、A8、B1–B7 与 D4 的模拟器实测，结果和�
 - 保存中断后的文件完整性，以及保存目标目录的字节级/残留文件校验。
 - B7 的实际网表生成与未连接节点跳过；本包缺少仿真后端。
 - C2–C6（样例编辑、仿真、失败恢复）。
-- D1 的干净安装（需先卸载）与 D5 的应用自身可写目录读写。
+- D1 的干净安装（需先卸载）。
 - A8 重复空错误框和 B6 缺库无界面提示需修复后复测。
 
 ## 缺陷清单
@@ -134,11 +135,10 @@ D4 已完成 A4、A6、A7、A8、B1–B7 与 D4 的模拟器实测，结果和�
 - 用户自定义文件名保存（模拟器输入法授权页阻断文本注入，见 `docs/MEMBER_C_D3_SAVE_REOPEN.md` §4）。
 - A7 的「保存目录无残留文件」核验（系统媒体目录对 shell 不可读）。
 - A8 的写入/关闭失败分支：打开成功后 `stream << text` 或 `file.close()` 失败时的提示、撤销栈与文档状态、原文件完整性（承接 D2-8）。
-- B4 版本过高的独立证据（现有截图与 B3 重复，需重跑并单独归档）。
 - 保存中断后的文件完整性，以及保存后文件的字节级校验（保存目标经系统文件访问框架落盘，`/storage/media/100/local/files` 对 shell 不可读）。
 - B7 的实际网表生成与未连接节点跳过（本包缺少仿真后端）。
 - C2–C6 样例编辑、仿真与失败恢复。
-- D1 干净安装、D5 应用自身可写目录读写。
+- D1 干净安装（候选包阶段执行）。
 - A8 重复空错误框、B6 缺库无界面提示修复后复测。
 - 非 ASCII 标签的保存与重开（保存编码依赖系统 locale，见 D2 记录 R4）。
 - PC 窗口尺寸、键鼠行为与真机行为本期不覆盖，按计划记录。

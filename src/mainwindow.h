@@ -69,11 +69,13 @@ namespace Caneda
         void newSymbol();
         void newText();
         void open(QString fileName = QString());
+        void openFromAppStorage();
         void openFileFormat(const QString &suffix);
         void openRecent();
         void clearRecent();
         void save();
         void saveAs();
+        void saveAsToAppStorage();
         bool saveAll();
         void closeFile();
         void print();
@@ -153,6 +155,8 @@ namespace Caneda
 
         void loadSettings();
         void saveSettings();
+
+        void saveAsTo(bool useAppStorage);
 
         void contextMenuEvent(QContextMenuEvent * event) override;
         void closeEvent(QCloseEvent *closeEvent) override;
